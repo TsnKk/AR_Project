@@ -7,7 +7,7 @@ navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
 
 // ZXing - สแกน QR แล้วโหลดโมเดล
-const codeReader = new BrowserMultiFormatReader();
+const codeReader = new ZXing.BrowserMultiFormatReader();
 codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
   if (result) {
     const url = result.getText();
