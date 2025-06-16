@@ -13,7 +13,7 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
     const url = result.getText();
     console.log('QR Detected:', url);
     loadModel(url);
-    codeReader.reset(); // หยุดสแกนหลังโหลดโมเดล
+    //codeReader.reset(); // หยุดสแกนหลังโหลดโมเดล
   }
 });
 
