@@ -2,7 +2,7 @@ import * as THREE from './three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
 
 const video = document.getElementById('video');
-const infoBox = document.getElementById('info-box');  // สมมติเพิ่ม div นี้ใน HTML เพื่อแสดงข้อมูล
+const infoBox = document.getElementById('info-box');
 
 // ตั้งค่ากล้อง
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -15,18 +15,34 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
     const url = result.getText();
     console.log('QR Detected:', url);
     loadFromQR(url);
-    codeReader.reset(); // หยุดสแกนถ้าต้องการ
+    codeReader.reset(); // หยุดสแกนหลังสแกนเจอ
   }
 });
 
 // สร้าง Scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
+const camera = new THREE.PerspectiveCamera(
+  70,
+  window.innerWidth / window.innerHeight,
+  0.01,
+  100
+);
 camera.position.z = 2;
 
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
+const renderer = new THREE.WebGLRenderer({
+  canvas: document.getElementById('canvas'),
+  alpha: true
+});
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
+
+// ทำให้ responsive
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
 
 // แสง
 const light = new THREE.HemisphereLight(0xffffff, 0x444444);
@@ -36,30 +52,34 @@ let model = null;
 
 function loadModel(url) {
   const loader = new GLTFLoader();
-  loader.load(url, gltf => {
-    if (model) {
-      scene.remove(model);
-      model.traverse(child => {
-        if (child.isMesh) {
-          child.geometry.dispose();
-          child.material.dispose();
-        }
-      });
-      model = null;
-    }
-    model = gltf.scene;
-    model.scale.set(0.1, 0.1, 0.1);
-    scene.add(model);
-  }, undefined, error => console.error('Error loading model:', error));
+  loader.load(
+    url,
+    gltf => {
+      if (model) {
+        scene.remove(model);
+        model.traverse(child => {
+          if (child.isMesh) {
+            child.geometry.dispose();
+            child.material.dispose();
+          }
+        });
+        model = null;
+      }
+      model = gltf.scene;
+      model.scale.set(0.1, 0.1, 0.1);
+      model.position.set(0, -0.5, 0); // ปรับตำแหน่งให้อยู่กลางกล้องมากขึ้น
+      scene.add(model);
+    },
+    undefined,
+    error => console.error('Error loading model:', error)
+  );
 }
 
-// ฟังก์ชันโหลด JSON จาก URL ที่ได้จาก QR Code แล้วแสดงข้อมูล + โหลดโมเดล
 function loadFromQR(jsonUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // แสดงข้อมูลใน infoBox
-      if(infoBox){
+      if (infoBox) {
         infoBox.innerHTML = `
           <h3>${data.name}</h3>
           <p>${data.description}</p>
@@ -68,12 +88,11 @@ function loadFromQR(jsonUrl) {
         `;
       }
 
-      // โหลดโมเดลจาก URL ที่ได้ใน JSON
       loadModel(data.model);
     })
     .catch(err => {
       console.error('โหลด JSON ไม่สำเร็จ:', err);
-      if(infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      if (infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
     });
 }
 
