@@ -1,6 +1,6 @@
-import * as THREE from './three.module.js';
-import { GLTFLoader } from './GLTFLoader.js';
-import { BrowserMultiFormatReader } from './zxing/library';
+    import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.module.js';
+    import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.154.0/examples/jsm/loaders/GLTFLoader.js';
+    import { BrowserMultiFormatReader } from 'https://cdn.jsdelivr.net/npm/@zxing/library@latest/esm/index.js';
 
 const video = document.getElementById('video');
 
