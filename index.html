@@ -5,22 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WebAR Demo</title>
   <style>
-    body, html { margin: 0; overflow: hidden; height: 100%; }
-    canvas, video { position: absolute; top: 0; left: 0; }
-    #info-box {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      max-width: 320px;
-      background: rgba(255,255,255,0.9);
-      padding: 12px;
-      border-radius: 8px;
-      font-family: sans-serif;
-      box-shadow: 0 0 8px rgba(0,0,0,0.2);
-      z-index: 10;
-      pointer-events: none;
-    }
-  </style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  video, canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+  #info-box {
+    position: fixed;
+    bottom: 20px;
+    right: 20px; /* เปลี่ยนเป็นขวา */
+    max-width: 320px;
+    background: rgba(255,255,255,0.9);
+    padding: 12px;
+    border-radius: 8px;
+    font-family: sans-serif;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    z-index: 10;
+    pointer-events: none;
+  }
+</style>
 </head>
 <body>
   <video id="video" autoplay muted playsinline></video>
