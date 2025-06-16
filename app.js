@@ -20,7 +20,7 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
 // สร้าง Scene
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
-camera.position.z = 1;
+camera.position.z = 2;
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -37,7 +37,7 @@ function loadModel(url) {
   loader.load(url, gltf => {
     if (model) scene.remove(model);
     model = gltf.scene;
-    model.scale.set(0.3, 0.3, 0.3);
+    model.scale.set(0.1, 0.1, 0.1);
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
