@@ -1,4 +1,4 @@
-import * as THREE from './three.module.js'; 
+import * as THREE from './three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
 
 const video = document.getElementById('video');
@@ -15,7 +15,7 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
     const url = result.getText();
     console.log('QR Detected:', url);
     loadFromQR(url);
-    codeReader.reset(); // หยุดสแกนถ้าต้องการ
+    //codeReader.reset(); // หยุดสแกนถ้าต้องการ
   }
 });
 
@@ -60,12 +60,12 @@ function loadFromQR(jsonUrl) {
     .then(data => {
       // แสดงข้อมูลใน infoBox
       if(infoBox){
-        infoBox.innerHTML = 
+        infoBox.innerHTML = `
           <h3>${data.name}</h3>
           <p>${data.description}</p>
           <p><strong>ราคา:</strong> ${data.price}</p>
           <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
-        ;
+        `;
       }
 
       // โหลดโมเดลจาก URL ที่ได้ใน JSON
