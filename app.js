@@ -1,4 +1,4 @@
-import * as THREE from './three.module.js';
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.154.0/build/three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
 const video = document.getElementById('video');
 
