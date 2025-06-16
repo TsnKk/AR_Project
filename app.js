@@ -1,7 +1,6 @@
 import * as THREE from './three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
 const video = document.getElementById('video');
-import { BrowserMultiFormatReader } from 'https://cdn.jsdelivr.net/npm/@zxing/library@latest/esm/index.js';
 
 // ตั้งค่ากล้อง
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
