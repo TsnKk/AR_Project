@@ -6,7 +6,16 @@
   <title>WebAR Demo</title>
   <style>
   body, html { margin: 0; overflow: hidden; height: 100%; }
-  canvas, video { position: absolute; top: 0; left: 0; }
+  canvas, video 
+  {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  }
+
   #info-box {
     position: fixed;
     top: 20px;
