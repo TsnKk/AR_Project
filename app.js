@@ -1,6 +1,5 @@
 import * as THREE from './three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
-import { BrowserMultiFormatReader } from '@zxing/library';
 const video = document.getElementById('video');
 
 // ตั้งค่ากล้อง
