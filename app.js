@@ -15,7 +15,7 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
     const url = result.getText();
     console.log('QR Detected:', url);
     loadFromQR(url);
-    //codeReader.reset(); // หยุดสแกนถ้าต้องการ
+    codeReader.reset(); // หยุดสแกนถ้าต้องการ
   }
 });
 
