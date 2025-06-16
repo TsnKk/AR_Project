@@ -1,0 +1,7 @@
+{
+  "model": "https://arprojectdemo.netlify.app/models/humburger.glb",
+  "name": "Hamburger",
+  "description": "This is a 3D model of a hamburger.",
+  "price": "50 THB",
+  "origin": "Thailand"
+}
