@@ -3,6 +3,12 @@ import { GLTFLoader } from './GLTFLoader.js';
 
 const video = document.getElementById('video');
 const infoBox = document.getElementById('info-box');  // สมมติเพิ่ม div นี้ใน HTML เพื่อแสดงข้อมูล
+const params = new URLSearchParams(window.location.search);
+const src = params.get('src');
+
+if (src) {
+  loadFromQR(src);  // ใช้ฟังก์ชันเดียวกับที่สแกน QR
+}
 
 // ตั้งค่ากล้อง
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -54,27 +60,31 @@ function loadModel(url) {
 }
 
 // ฟังก์ชันโหลด JSON จาก URL ที่ได้จาก QR Code แล้วแสดงข้อมูล + โหลดโมเดล
-function loadFromQR(jsonUrl) {
-  fetch(jsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      // แสดงข้อมูลใน infoBox
-      if(infoBox){
-        infoBox.innerHTML = `
-          <h3>${data.name}</h3>
-          <p>${data.description}</p>
-          <p><strong>ราคา:</strong> ${data.price}</p>
-          <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
-        `;
-      }
-
-      // โหลดโมเดลจาก URL ที่ได้ใน JSON
-      loadModel(data.model);
-    })
-    .catch(err => {
-      console.error('โหลด JSON ไม่สำเร็จ:', err);
-      if(infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-    });
+function loadFromQR(url) {
+  if (url.endsWith('.json')) {
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        if(infoBox){
+          infoBox.innerHTML = `
+            <h3>${data.name}</h3>
+            <p>${data.description}</p>
+            <p><strong>ราคา:</strong> ${data.price}</p>
+            <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
+          `;
+        }
+        loadModel(data.model);
+      })
+      .catch(err => {
+        console.error('โหลด JSON ไม่สำเร็จ:', err);
+        if(infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      });
+  } else if (url.endsWith('.glb')) {
+    if(infoBox) infoBox.innerHTML = '<p>กำลังโหลดโมเดล...</p>';
+    loadModel(url);
+  } else {
+    if(infoBox) infoBox.innerHTML = 'QR นี้ไม่รองรับ';
+  }
 }
 
 // เรนเดอร์ลูป
