@@ -51,6 +51,11 @@ function loadModel(url) {
     model.scale.set(0.07, 0.07, 0.07); // โมเดลเล็กลงครึ่งหนึ่ง
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
+
+  const vector = new THREE.Vector3(0, 0, -2); // ห่างจากกล้อง 2 หน่วย (หน้า)
+    vector.applyMatrix4(camera.matrixWorld);    // แปลงเป็นตำแหน่งในโลกจริง
+    model.position.copy(vector);               // วางโมเดลไว้ตำแหน่งนั้น
+  }, undefined, error => console.error('Error loading model:', error));
 }
 
 // ฟังก์ชันโหลด JSON จาก URL ที่ได้จาก QR Code แล้วแสดงข้อมูล + โหลดโมเดล
