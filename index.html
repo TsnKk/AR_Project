@@ -28,8 +28,10 @@
     #info-box {
   position: fixed;
   bottom: 0;
-  left: 0;
-  width: 50%;                   /* ✅ เต็มความกว้าง */
+  left: 50%; /* ✅ จัดให้กรอบอยู่ตรงกลางแนวนอน */
+  transform: translateX(-50%); /* ✅ เลื่อนกรอบกลับมาครึ่งหนึ่งของตัวเอง */
+  width: 100%;
+  max-width: 500px;             /* ✅ จำกัดความกว้างไม่ให้กว้างเกิน */
   background: rgba(255, 255, 255, 0.95);
   padding: 16px;
   font-family: sans-serif;
