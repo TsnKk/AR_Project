@@ -58,7 +58,7 @@ function loadModel(url) {
 
     // ✅ เพิ่มโมเดลใหม่เข้า Scene
     model = gltf.scene;
-    model.scale.set(0.07, 0.07, 0.07); // ปรับขนาดเล็กลง
+    model.scale.set(0.09, 0.09, 0.09); // ปรับขนาดเล็กลง
     
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
