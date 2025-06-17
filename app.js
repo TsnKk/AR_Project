@@ -59,12 +59,7 @@ function loadModel(url) {
     // ✅ เพิ่มโมเดลใหม่เข้า Scene
     model = gltf.scene;
     model.scale.set(0.07, 0.07, 0.07); // ปรับขนาดเล็กลง
-
-    // 📌 วางโมเดลไว้ "หน้ากล้อง"
-    const vector = new THREE.Vector3(0, 0, -2); // จุดหน้ากล้อง (ระยะ -2)
-    vector.applyMatrix4(camera.matrixWorld);   // แปลงเป็นตำแหน่งในโลกจริง
-    model.position.copy(vector);
-
+    
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
