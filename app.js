@@ -21,8 +21,8 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
 
 // สร้าง Scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
-camera.position.z = 2;
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.01, 100);
+camera.position.z = 5;
 
 const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
