@@ -58,7 +58,7 @@ function loadModel(url) {
 
     // ✅ เพิ่มโมเดลใหม่เข้า Scene
     model = gltf.scene;
-    model.scale.set(0.1, 0.1, 0.1); // ปรับขนาดเล็กลง
+    model.scale.set(0.4, 0.4, 0.43); // ปรับขนาดเล็กลง
     
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
@@ -102,10 +102,32 @@ function animate() {
   renderer.render(scene, camera);
 }
 animate();
+// เตรียม raycaster และตัวแปรสัมผัส
+const raycaster = new THREE.Raycaster();
+const touch = new THREE.Vector2();
+
+// ฟังก์ชันเมื่อแตะหน้าจอ
+function onTouchMoveModel(event) {
+  if (!model) return;
+
+  const touchX = event.changedTouches[0].clientX / window.innerWidth * 2 - 1;
+  const touchY = -(event.changedTouches[0].clientY / window.innerHeight) * 2 + 1;
+  touch.set(touchX, touchY);
+
+  raycaster.setFromCamera(touch, camera);
+
+  const distance = 2;
+  const newPos = new THREE.Vector3();
+  raycaster.ray.at(distance, newPos);
+  model.position.copy(newPos);
+}
+
 
 // ✅ รองรับการปรับขนาดหน้าจอ (Responsive)
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
+// ผูก event touch
+window.addEventListener('touchend', onTouchMoveModel, false);
 });
