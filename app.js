@@ -58,7 +58,7 @@ function loadModel(url) {
 
     // ✅ เพิ่มโมเดลใหม่เข้า Scene
     model = gltf.scene;
-    model.scale.set(0.4, 0.4, 0.43); // ปรับขนาดเล็กลง
+    model.scale.set(0.2, 0.2, 0.2); // ปรับขนาดเล็กลง
     
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
@@ -122,12 +122,15 @@ function onTouchMoveModel(event) {
   model.position.copy(newPos);
 }
 
+// ผูก event touch
+window.addEventListener('touchend', onTouchMoveModel, false);
+
 
 // ✅ รองรับการปรับขนาดหน้าจอ (Responsive)
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-// ผูก event touch
-window.addEventListener('touchend', onTouchMoveModel, false);
 });
+
+
