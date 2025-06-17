@@ -48,7 +48,7 @@ function loadModel(url) {
       model = null;
     }
     model = gltf.scene;
-    model.scale.set(0.1, 0.1, 0.1);
+    model.scale.set(0.05, 0.05, 0.05); // โมเดลเล็กลงครึ่งหนึ่ง
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
