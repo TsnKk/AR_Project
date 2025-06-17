@@ -1,37 +1,35 @@
 import * as THREE from './three.module.js';
 import { GLTFLoader } from './GLTFLoader.js';
+import { BrowserMultiFormatReader } from './zxing.min.js';
 
 const video = document.getElementById('video');
-const infoBox = document.getElementById('info-box');  // สมมติเพิ่ม div นี้ใน HTML เพื่อแสดงข้อมูล
-const params = new URLSearchParams(window.location.search);
-const src = params.get('src');
-
-if (src) {
-  loadFromQR(src);  // ใช้ฟังก์ชันเดียวกับที่สแกน QR
-}
+const infoBox = document.getElementById('info-box');
+const canvas = document.getElementById('canvas');
 
 // ตั้งค่ากล้อง
-navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-  .then(stream => video.srcObject = stream);
+navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 640 }, height: { ideal: 480 } } })
+  .then(stream => video.srcObject = stream)
+  .catch(err => console.error('ไม่สามารถเข้าถึงกล้อง:', err));
 
-// ZXing - สแกน QR แล้วโหลดโมเดล + ข้อมูล
-const codeReader = new ZXing.BrowserMultiFormatReader();
+// ZXing - อ่าน QR
+const codeReader = new BrowserMultiFormatReader();
 codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
   if (result) {
     const url = result.getText();
     console.log('QR Detected:', url);
     loadFromQR(url);
-    //codeReader.reset(); // หยุดสแกนถ้าต้องการ
+    // codeReader.reset(); // ถ้าต้องการหยุดสแกนเมื่อพบแล้ว
   }
 });
 
 // สร้าง Scene
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.01, 100);
-camera.position.z = 5;
+const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
+camera.position.z = 2; // กล้องห่างจากวัตถุ
 
-const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('canvas'), alpha: true });
+const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
 // แสง
@@ -40,6 +38,7 @@ scene.add(light);
 
 let model = null;
 
+// โหลดโมเดล GLB
 function loadModel(url) {
   const loader = new GLTFLoader();
   loader.load(url, gltf => {
@@ -51,21 +50,24 @@ function loadModel(url) {
           child.material.dispose();
         }
       });
-      model = null;
     }
     model = gltf.scene;
-    model.scale.set(0.07, 0.07, 0.07); // โมเดลเล็กลงครึ่งหนึ่ง
+    model.scale.set(0.1, 0.1, 0.1); // ย่อขนาดโมเดล
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
 
-// ฟังก์ชันโหลด JSON จาก URL ที่ได้จาก QR Code แล้วแสดงข้อมูล + โหลดโมเดล
+// โหลดจาก QR
 function loadFromQR(url) {
-  if (url.endsWith('.json')) {
-    fetch(url)
+  const u = new URL(url, location.href);
+  const src = u.searchParams.get('src');
+  const finalUrl = src || url;
+
+  if (finalUrl.endsWith('.json')) {
+    fetch(finalUrl)
       .then(res => res.json())
       .then(data => {
-        if(infoBox){
+        if (infoBox) {
           infoBox.innerHTML = `
             <h3>${data.name}</h3>
             <p>${data.description}</p>
@@ -77,13 +79,13 @@ function loadFromQR(url) {
       })
       .catch(err => {
         console.error('โหลด JSON ไม่สำเร็จ:', err);
-        if(infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+        if (infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
       });
-  } else if (url.endsWith('.glb')) {
-    if(infoBox) infoBox.innerHTML = '<p>กำลังโหลดโมเดล...</p>';
-    loadModel(url);
+  } else if (finalUrl.endsWith('.glb')) {
+    if (infoBox) infoBox.innerHTML = '<p>กำลังโหลดโมเดล...</p>';
+    loadModel(finalUrl);
   } else {
-    if(infoBox) infoBox.innerHTML = 'QR นี้ไม่รองรับ';
+    if (infoBox) infoBox.innerHTML = 'QR นี้ไม่รองรับ';
   }
 }
 
@@ -95,13 +97,9 @@ function animate() {
 }
 animate();
 
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
-
-// รองรับ responsive
+// ทำให้ canvas เต็มจอเมื่อเปลี่ยนขนาด
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
