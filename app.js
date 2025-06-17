@@ -54,7 +54,11 @@ function loadModel(url) {
 }
 
 // ฟังก์ชันโหลด JSON จาก URL ที่ได้จาก QR Code แล้วแสดงข้อมูล + โหลดโมเดล
-function loadFromQR(jsonUrl) {
+function loadFromQR(qrUrl) {
+  // ถ้ามีพารามิเตอร์ src อยู่ในลิงก์
+  const url = new URL(qrUrl);
+  const jsonUrl = url.searchParams.get("src") || qrUrl;
+
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
@@ -68,7 +72,7 @@ function loadFromQR(jsonUrl) {
         `;
       }
 
-      // โหลดโมเดลจาก URL ที่ได้ใน JSON
+      // โหลดโมเดล
       loadModel(data.model);
     })
     .catch(err => {
