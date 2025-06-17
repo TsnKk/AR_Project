@@ -4,50 +4,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WebAR Demo</title>
+
   <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-  }
+    /* 🔧 รีเซ็ตค่าเริ่มต้นของหน้า */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
 
-  video, canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+    /* 🎥 จัดตำแหน่งกล้องและ Canvas ให้เต็มจอ */
+    video, canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* ให้แสดงเต็มพื้นที่แบบพอดี */
+    }
 
-  #info-box {
-    position: fixed;
-    bottom: 20px;
-    right: 20px; /* เปลี่ยนเป็นขวา */
-    max-width: 320px;
-    background: rgba(255,255,255,0.9);
-    padding: 12px;
-    border-radius: 8px;
-    font-family: sans-serif;
-    box-shadow: 0 0 8px rgba(0,0,0,0.2);
-    z-index: 10;
-    pointer-events: none;
-  }
-</style>
+    /* 🧾 กล่องแสดงข้อมูล */
+    #info-box {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;                   /* ✅ เต็มความกว้าง */
+  background: rgba(255, 255, 255, 0.95);
+  padding: 16px;
+  font-family: sans-serif;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+  pointer-events: none;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  box-sizing: border-box;
+}
+  </style>
 </head>
 <body>
+
+  <!-- 🎥 วิดีโอแสดงภาพจากกล้อง -->
   <video id="video" autoplay muted playsinline></video>
+
+  <!-- 🖼️ พื้นที่เรนเดอร์โมเดล 3D -->
   <canvas id="canvas"></canvas>
 
+  <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR -->
   <div id="info-box">
     สแกน QR Code เพื่อดูรายละเอียดโมเดล
   </div>
 
-  <!-- ✅ โหลด ZXing ก่อน -->
+  <!-- 🔍 โหลดไลบรารี ZXing สำหรับสแกน QR Code -->
   <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
 
-  <!-- ✅ โหลดสคริปต์หลัก -->
+  <!-- ⚙️ โหลดสคริปต์หลัก (ใช้โมดูล JavaScript) -->
   <script type="module" src="./app.js"></script>
 </body>
-</html> 
+</html>
