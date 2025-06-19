@@ -63,6 +63,10 @@ loader.load(url, gltf => {
   }, undefined, error => console.error('Error loading model:', error));
 }
 
+// ✅ เพิ่มโมเดลใหม่เข้า Scene
+  model = gltf.scene;
+  model.scale.set(0.2, 0.2, 0.2); // ปรับขนาดเล็กลง
+
 // ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
 function loadFromQR(qrUrl) {
   const url = new URL(qrUrl);
