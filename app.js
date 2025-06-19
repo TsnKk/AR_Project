@@ -59,10 +59,6 @@ loader.load(url, gltf => {
 }, undefined, error => console.error('Error loading model:', error));
     }
     
-    scene.add(model);
-  }, undefined, error => console.error('Error loading model:', error));
-}
-
 // ✅ เพิ่มโมเดลใหม่เข้า Scene
   model = gltf.scene;
   model.scale.set(0.2, 0.2, 0.2); // ปรับขนาดเล็กลง
