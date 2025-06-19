@@ -55,7 +55,7 @@ loader.load(url, gltf => {
   }
   // ✅ เพิ่มโมเดลใหม่เข้า Scene
   model = gltf.scene;
-  model.scale.set(5.0, 5.0, 5.0); // ปรับขนาดเล็กลง
+  model.scale.set(1.0, 1.0, 1.0); // ปรับขนาดเล็กลง
   model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
   scene.add(model);
 }, undefined, error => console.error('Error loading model:', error));
