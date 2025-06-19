@@ -39,7 +39,6 @@ const light = new THREE.HemisphereLight(0xffffff, 0x444444); // แสงนุ�
 scene.add(light);
 
 let model = null; // เก็บโมเดลปัจจุบัน
-
 // ✅ โหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
@@ -54,14 +53,14 @@ loader.load(url, gltf => {
     });
     model = null;
   }
+  // ✅ เพิ่มโมเดลใหม่เข้า Scene
+  model = gltf.scene;
+  model.scale.set(0.8, 0.8, 0.8); // ปรับขนาดเล็กลง
   model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
   scene.add(model);
 }, undefined, error => console.error('Error loading model:', error));
     }
     
-// ✅ เพิ่มโมเดลใหม่เข้า Scene
-  model = gltf.scene;
-  model.scale.set(0.2, 0.2, 0.2); // ปรับขนาดเล็กลง
 
 // ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
 function loadFromQR(qrUrl) {
