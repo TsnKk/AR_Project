@@ -43,17 +43,20 @@ let model = null; // เก็บโมเดลปัจจุบัน
 // ✅ โหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
-  loader.load(url, gltf => {
-    // 🔄 ลบโมเดลเก่า (ถ้ามี)
-    if (model) {
-      scene.remove(model);
-      model.traverse(child => {
-        if (child.isMesh) {
-          child.geometry.dispose();
-          child.material.dispose();
-        }
-      });
-      model = null;
+loader.load(url, gltf => {
+  if (model) {
+    scene.remove(model);
+    model.traverse(child => {
+      if (child.isMesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    });
+    model = null;
+  }
+  model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
+  scene.add(model);
+}, undefined, error => console.error('Error loading model:', error));
     }
     
     scene.add(model);
