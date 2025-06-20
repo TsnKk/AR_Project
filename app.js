@@ -39,26 +39,28 @@ const light = new THREE.HemisphereLight(0xffffff, 0x444444); // แสงนุ�
 scene.add(light);
 
 let model = null; // เก็บโมเดลปัจจุบัน
-
 // ✅ โหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
-  loader.load(url, gltf => {
-    // 🔄 ลบโมเดลเก่า (ถ้ามี)
-    if (model) {
-      scene.remove(model);
-      model.traverse(child => {
-        if (child.isMesh) {
-          child.geometry.dispose();
-          child.material.dispose();
-        }
-      });
-      model = null;
+loader.load(url, gltf => {
+  if (model) {
+    scene.remove(model);
+    model.traverse(child => {
+      if (child.isMesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    });
+    model = null;
+  }
+  // ✅ เพิ่มโมเดลใหม่เข้า Scene
+  model = gltf.scene;
+  model.scale.set(1.0, 1.0, 1.0); // ปรับขนาดเล็กลง
+  model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
+  scene.add(model);
+}, undefined, error => console.error('Error loading model:', error));
     }
     
-    scene.add(model);
-  }, undefined, error => console.error('Error loading model:', error));
-}
 
 // ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
 function loadFromQR(qrUrl) {
@@ -87,69 +89,17 @@ function loadFromQR(qrUrl) {
     });
 }
 
-// --- เพิ่มตัวแปรควบคุมการหมุน ---
-let isDragging = false;
-let previousX = 0;
-let rotationY = 0;
-let autoRotate = true; // เพิ่มตัวแปรสำหรับหมุนอัตโนมัติ
-
-// --- Mouse Events ---
-renderer.domElement.addEventListener('mousedown', (e) => {
-  isDragging = true;
-  autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
-  previousX = e.clientX;
-});
-renderer.domElement.addEventListener('mousemove', (e) => {
-  if (!isDragging) return;
-  const deltaX = e.clientX - previousX;
-  previousX = e.clientX;
-  rotationY += deltaX * 0.01;
-});
-renderer.domElement.addEventListener('mouseup', () => {
-  isDragging = false;
-  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
-});
-renderer.domElement.addEventListener('mouseleave', () => {
-  isDragging = false;
-  autoRotate = true;
-});
-
-// --- Touch Events ---
-renderer.domElement.addEventListener('touchstart', (e) => {
-  if (e.touches.length === 1) {
-    isDragging = true;
-    autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
-    previousX = e.touches[0].clientX;
-  }
-});
-renderer.domElement.addEventListener('touchmove', (e) => {
-  if (!isDragging || e.touches.length !== 1) return;
-  const deltaX = e.touches[0].clientX - previousX;
-  previousX = e.touches[0].clientX;
-  rotationY += deltaX * 0.01;
-});
-renderer.domElement.addEventListener('touchend', () => {
-  isDragging = false;
-  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
-});
-
 // ✅ วนเรนเดอร์ทุกเฟรม
 function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    // ถ้ากำลังลากอยู่จะไม่หมุนอัตโนมัติ
-    if (!isDragging && autoRotate) {
-      rotationY += 0.01; // หมุนอัตโนมัติ
-    }
-    model.rotation.y = rotationY;
+    model.rotation.y += 0.01; // หมุนโมเดล
   }
 
   renderer.render(scene, camera);
 }
 animate();
-
-
 // เตรียม raycaster และตัวแปรสัมผัส
 const raycaster = new THREE.Raycaster();
 const touch = new THREE.Vector2();
@@ -160,4 +110,3 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
