@@ -89,12 +89,52 @@ function loadFromQR(qrUrl) {
     });
 }
 
+// --- เพิ่มตัวแปรควบคุมการหมุน ---
+let isDragging = false;
+let previousX = 0;
+let rotationY = 0;
+
+// --- Mouse Events ---
+renderer.domElement.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  previousX = e.clientX;
+});
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const deltaX = e.clientX - previousX;
+  previousX = e.clientX;
+  rotationY += deltaX * 0.01; // ปรับความไวได้
+});
+renderer.domElement.addEventListener('mouseup', () => {
+  isDragging = false;
+});
+renderer.domElement.addEventListener('mouseleave', () => {
+  isDragging = false;
+});
+
+// --- Touch Events ---
+renderer.domElement.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    previousX = e.touches[0].clientX;
+  }
+});
+renderer.domElement.addEventListener('touchmove', (e) => {
+  if (!isDragging || e.touches.length !== 1) return;
+  const deltaX = e.touches[0].clientX - previousX;
+  previousX = e.touches[0].clientX;
+  rotationY += deltaX * 0.01;
+});
+renderer.domElement.addEventListener('touchend', () => {
+  isDragging = false;
+});
+
 // ✅ วนเรนเดอร์ทุกเฟรม
 function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    model.rotation.y += 0.01; // หมุนโมเดล
+    model.rotation.y = rotationY; // หมุนตามค่าที่ควบคุม
   }
 
   renderer.render(scene, camera);
