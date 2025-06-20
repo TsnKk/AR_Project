@@ -89,17 +89,67 @@ function loadFromQR(qrUrl) {
     });
 }
 
+let isDragging = false;
+let previousX = 0;
+let rotationY = 0;
+let autoRotate = true; // เพิ่มตัวแปรสำหรับหมุนอัตโนมัติ
+
+// --- Mouse Events ---
+renderer.domElement.addEventListener('mousedown', (e) => {
+  isDragging = true;
+  autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
+  previousX = e.clientX;
+});
+renderer.domElement.addEventListener('mousemove', (e) => {
+  if (!isDragging) return;
+  const deltaX = e.clientX - previousX;
+  previousX = e.clientX;
+  rotationY += deltaX * 0.01;
+});
+renderer.domElement.addEventListener('mouseup', () => {
+  isDragging = false;
+  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
+});
+renderer.domElement.addEventListener('mouseleave', () => {
+  isDragging = false;
+  autoRotate = true;
+});
+
+// --- Touch Events ---
+renderer.domElement.addEventListener('touchstart', (e) => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
+    previousX = e.touches[0].clientX;
+  }
+});
+renderer.domElement.addEventListener('touchmove', (e) => {
+  if (!isDragging || e.touches.length !== 1) return;
+  const deltaX = e.touches[0].clientX - previousX;
+  previousX = e.touches[0].clientX;
+  rotationY += deltaX * 0.01;
+});
+renderer.domElement.addEventListener('touchend', () => {
+  isDragging = false;
+  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
+});
+
 // ✅ วนเรนเดอร์ทุกเฟรม
 function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    model.rotation.y += 0.01; // หมุนโมเดล
+    // ถ้ากำลังลากอยู่จะไม่หมุนอัตโนมัติ
+    if (!isDragging && autoRotate) {
+      rotationY += 0.01; // หมุนอัตโนมัติ
+    }
+    model.rotation.y = rotationY;
   }
 
   renderer.render(scene, camera);
 }
 animate();
+
 // เตรียม raycaster และตัวแปรสัมผัส
 const raycaster = new THREE.Raycaster();
 const touch = new THREE.Vector2();
