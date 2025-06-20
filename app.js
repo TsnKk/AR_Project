@@ -39,33 +39,12 @@ const light = new THREE.HemisphereLight(0xffffff, 0x444444); // แสงนุ�
 scene.add(light);
 
 let model = null; // เก็บโมเดลปัจจุบัน
+
 // ✅ โหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
-loader.load(url, gltf => {
-  if (model) {
-    scene.remove(model);
-    model.traverse(child => {
-      if (child.isMesh) {
-        child.geometry.dispose();
-        child.material.dispose();
-      }
-    });
-    model = null;
-  }
-  // ✅ เพิ่มโมเดลใหม่เข้า Scene
-  model = gltf.scene;
-  model.scale.set(1.0, 1.0, 1.0); // ปรับขนาดเล็กลง
-  model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
-  scene.add(model);
-}, undefined, error => console.error('Error loading model:', error));
-    }
-    
-
-// ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
-function loadModel(qrurl) {
-  const loader = new GLTFLoader();
   loader.load(url, gltf => {
+    // 🔄 ลบโมเดลเก่า (ถ้ามี)
     if (model) {
       scene.remove(model);
       model.traverse(child => {
@@ -76,42 +55,70 @@ function loadModel(qrurl) {
       });
       model = null;
     }
-
-    // โหลดโมเดลใหม่ json
-    model = gltf.scene;
-    model.scale.set(1.0, 1.0, 1.0);
+    
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
+}
+
+// ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
+function loadFromQR(qrUrl) {
+  const url = new URL(qrUrl);
+  const jsonUrl = url.searchParams.get("src") || qrUrl; // ดึงค่าจาก ?src=... หรือใช้ตรงๆ
+
+  fetch(jsonUrl)
+    .then(res => res.json())
+    .then(data => {
+      // 📄 แสดงข้อมูลสินค้า
+      if (infoBox) {
+        infoBox.innerHTML = `
+          <h3>${data.name}</h3>
+          <p>${data.description}</p>
+          <p><strong>ราคา:</strong> ${data.price}</p>
+          <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
+        `;
+      }
+
+      // ⬇ โหลดโมเดลตามลิงก์ใน JSON
+      loadModel(data.model);
+    })
+    .catch(err => {
+      console.error('โหลด JSON ไม่สำเร็จ:', err);
+      if (infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+    });
 }
 
 // --- เพิ่มตัวแปรควบคุมการหมุน ---
 let isDragging = false;
 let previousX = 0;
 let rotationY = 0;
-let rotationZ = 0;
+let autoRotate = true; // เพิ่มตัวแปรสำหรับหมุนอัตโนมัติ
 
 // --- Mouse Events ---
 renderer.domElement.addEventListener('mousedown', (e) => {
   isDragging = true;
+  autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
   previousX = e.clientX;
 });
 renderer.domElement.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
   const deltaX = e.clientX - previousX;
   previousX = e.clientX;
-  rotationY += deltaX * 0.01; // ปรับความไวได้
+  rotationY += deltaX * 0.01;
 });
 renderer.domElement.addEventListener('mouseup', () => {
   isDragging = false;
+  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
 });
 renderer.domElement.addEventListener('mouseleave', () => {
   isDragging = false;
+  autoRotate = true;
 });
 
 // --- Touch Events ---
 renderer.domElement.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     isDragging = true;
+    autoRotate = false; // หยุดหมุนอัตโนมัติเมื่อเริ่มลาก
     previousX = e.touches[0].clientX;
   }
 });
@@ -123,6 +130,7 @@ renderer.domElement.addEventListener('touchmove', (e) => {
 });
 renderer.domElement.addEventListener('touchend', () => {
   isDragging = false;
+  autoRotate = true; // กลับมาหมุนอัตโนมัติเมื่อหยุดลาก
 });
 
 // ✅ วนเรนเดอร์ทุกเฟรม
@@ -130,16 +138,18 @@ function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    if (isDragging) {
-      model.rotation.y = rotationY;
-    } else {
-      model.rotation.y += 0.01;
+    // ถ้ากำลังลากอยู่จะไม่หมุนอัตโนมัติ
+    if (!isDragging && autoRotate) {
+      rotationY += 0.01; // หมุนอัตโนมัติ
     }
+    model.rotation.y = rotationY;
   }
 
   renderer.render(scene, camera);
 }
 animate();
+
+
 // เตรียม raycaster และตัวแปรสัมผัส
 const raycaster = new THREE.Raycaster();
 const touch = new THREE.Vector2();
@@ -150,5 +160,4 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
-
 
