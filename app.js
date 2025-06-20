@@ -10,67 +10,13 @@ const infoBox = document.getElementById('info-box');  // กล่องแส�
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
 
-// ✅ สร้าง element สำหรับแสดงวงหมุนโหลดและเวลา
-const loaderOverlay = document.createElement('div');
-loaderOverlay.style.position = 'fixed';
-loaderOverlay.style.top = 0;
-loaderOverlay.style.left = 0;
-loaderOverlay.style.width = '100vw';
-loaderOverlay.style.height = '100vh';
-loaderOverlay.style.background = 'rgba(0,0,0,0.5)';
-loaderOverlay.style.display = 'flex';
-loaderOverlay.style.flexDirection = 'column';
-loaderOverlay.style.justifyContent = 'center';
-loaderOverlay.style.alignItems = 'center';
-loaderOverlay.style.zIndex = 9999;
-loaderOverlay.style.color = '#fff';
-loaderOverlay.style.fontSize = '2em';
-loaderOverlay.innerHTML = `
-  <div class="spinner" style="border: 8px solid #f3f3f3; border-top: 8px solid #3498db; border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite;"></div>
-  <div id="loading-time" style="margin-top: 20px;">0 วินาที</div>
-`;
-document.body.appendChild(loaderOverlay);
-loaderOverlay.style.display = 'none';
-
-// เพิ่ม CSS สำหรับ spinner
-const style = document.createElement('style');
-style.innerHTML = `
-@keyframes spin {
-  0% { transform: rotate(0deg);}
-  100% { transform: rotate(360deg);}
-}`;
-document.head.appendChild(style);
-
 // ✅ ตั้งค่า QR Code Scanner ด้วย ZXing
 const codeReader = new ZXing.BrowserMultiFormatReader();
 codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
   if (result) {
     const url = result.getText();
     console.log('QR Detected:', url);
-
-    // ปิดกล้อง
-    if (video.srcObject) {
-      video.srcObject.getTracks().forEach(track => track.stop());
-      video.srcObject = null;
-    }
-
-    // แสดงวงหมุนโหลดและจับเวลา
-    loaderOverlay.style.display = 'flex';
-    let seconds = 0;
-    const timeDiv = document.getElementById('loading-time');
-    timeDiv.textContent = '0 วินาที';
-    const timer = setInterval(() => {
-      seconds++;
-      timeDiv.textContent = `${seconds} วินาที`;
-    }, 1000);
-
-    // โหลดข้อมูลจาก QR
-    await loadFromQR(url);
-
-    // ซ่อนวงหมุนโหลดและหยุดจับเวลา
-    clearInterval(timer);
-    loaderOverlay.style.display = 'none';
-
+    loadFromQR(url); // โหลดข้อมูลจากลิงก์ที่ได้
     //codeReader.reset(); // เปิดใช้งานหากต้องการหยุดสแกนหลังพบ QR
   }
 });
@@ -189,8 +135,10 @@ function animate() {
   requestAnimationFrame(animate);
 
   if (model) {
-    model.rotation.y = rotationY; // หมุนตามค่าที่ควบคุม
-    model.rotation.y += 0.01;
+        model.rotation.y += 0.01;
+  }
+  else (model) {
+        model.rotation.y = rotationY; // หมุนตามค่าที่ควบคุม
   }
 
   renderer.render(scene, camera);
