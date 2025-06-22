@@ -55,48 +55,41 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      if (infoMessage) {
-        infoMessage.innerHTML = `
+      // ✅ แก้ไข: เซ็ตเฉพาะ info-content ไม่ทับ scroll-arrow
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) {
+        infoContent.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
           <strong>ข้อมูลสินค้า</strong><br>
-          <p><strong>ชนิดผลไม้:</strong> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/,'') : ''}</p>
-          <p><strong>ขนาด:</strong> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/,'') : ''}</p>
-          <p><strong>น้ำหนัก:</strong> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/,'') : ''}</p>
-          <p><strong>ราคาต่อกิโลกรัม:</strong> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/,'') : ''}</p>
-          <p><strong>วันที่เก็บ:</strong> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/,'') : ''}</p>
+          <p><strong>ชนิดผลไม้:</strong> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/, '') : ''}</p>
+          <p><strong>ขนาด:</strong> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/, '') : ''}</p>
+          <p><strong>น้ำหนัก:</strong> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/, '') : ''}</p>
+          <p><strong>ราคาต่อกิโลกรัม:</strong> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/, '') : ''}</p>
+          <p><strong>วันที่เก็บ:</strong> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/, '') : ''}</p>
           <strong>ข้อมูลสวน</strong><br>
-          <p><strong>ชื่อสวน:</strong> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/,'') : ''}</p>
-          <p><strong>เจ้าของสวน:</strong> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/,'') : ''}</p>
-          <p><strong>ตำแหน่งสวน:</strong> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/,'') : ''}</p>
-          <p><strong>ฤดูกาลเก็บเกี่ยว:</strong> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/,'') : ''}</p>
-          <p><strong>ปุ๋ยที่ใช้:</strong> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/,'') : ''}</p>
+          <p><strong>ชื่อสวน:</strong> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/, '') : ''}</p>
+          <p><strong>เจ้าของสวน:</strong> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/, '') : ''}</p>
+          <p><strong>ตำแหน่งสวน:</strong> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/, '') : ''}</p>
+          <p><strong>ฤดูกาลเก็บเกี่ยว:</strong> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/, '') : ''}</p>
+          <p><strong>ปุ๋ยที่ใช้:</strong> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/, '') : ''}</p>
           <strong>การเก็บรักษา</strong><br>
-          <p><strong>อายุการเก็บรักษา:</strong> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/,'') : ''}</p>
-          <p><strong>วิธีเก็บรักษา:</strong> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/,'') : ''}</p>
+          <p><strong>อายุการเก็บรักษา:</strong> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/, '') : ''}</p>
+          <p><strong>วิธีเก็บรักษา:</strong> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/, '') : ''}</p>
           <strong>คุณค่าทางโภชนาการ</strong><br>
-          <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/,'') : ''}</p>
+          <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/, '') : ''}</p>
         `;
       }
 
-      // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
-      if (model) {
-        scene.remove(model);
-        model = null;
-      }
+      // ✅ ไม่ต้อง remove model ที่นี่ เพราะ loadModel จะจัดการเอง
       loadModel(data.model);
 
       // ตั้งค่าสีพื้นหลัง
       renderer.setClearColor(0xffffff, 1);
       document.body.style.background = "#fff";
 
-      // ปิดกล้องหลังสแกนเสร็จ
-      if (video && video.srcObject) {
-        const tracks = video.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        video.srcObject = null;
-        video.style.display = "none";
-      }
+      // ✅ ไม่ควรปิดกล้องที่นี่ ถ้าต้องการสแกนซ้ำ
+      // ถ้าต้องการปิดกล้องจริง ๆ ให้เพิ่มปุ่ม "สแกนใหม่" แล้วค่อยเปิดกล้องใหม่
 
       isScanning = false;
       codeReader.reset();
@@ -104,7 +97,8 @@ function loadFromQR(qrUrl) {
     .catch(err => {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
-      if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) infoContent.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
       isScanning = false;
       codeReader.reset();
     });
