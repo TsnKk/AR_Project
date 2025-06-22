@@ -5,7 +5,20 @@ import { GLTFLoader } from './GLTFLoader.js';
 // ✅ อ้างอิงองค์ประกอบ HTML
 const video = document.getElementById('video');
 const infoBox = document.getElementById('info-box');  // กล่องแสดงข้อมูลโมเดล
-const scanAgainBtn = document.getElementById('scan-again-btn'); // ปุ่มสแกนใหม่
+const scanAgainBtn = document.getElementById('scan-again-btn');
+if (scanAgainBtn) {
+  scanAgainBtn.addEventListener('click', () => {
+    // ล้างข้อมูล
+    if (infoBox) infoBox.innerHTML = '';
+    renderer.setClearColor(0x000000, 0); // กลับเป็นโปร่งใสหรือสีเดิม
+    document.body.style.background = "#000";
+    if (model) {
+      scene.remove(model);
+      model = null;
+    }
+    codeReader.reset(); // เริ่มสแกน QR ใหม่
+  });
+}
 
 // ✅ เปิดกล้องหลัง
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
@@ -164,26 +177,4 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
-// ✅ ฟังก์ชันสำหรับเริ่มสแกนใหม่
-function startScan() {
-  codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-    if (result) {
-      const url = result.getText();
-      console.log('QR Detected:', url);
-      loadFromQR(url); // โหลดข้อมูลจากลิงก์ที่ได้
-    }
-  });
-}
-
-// ✅ เพิ่ม Event Listener ให้กับปุ่มสแกนใหม่
-scanAgainBtn.addEventListener('click', () => {
-  // ล้างข้อมูลใน infoBox
-  if (infoBox) {
-    infoBox.innerHTML = '';
-  }
-
-  // เริ่มสแกนใหม่
-  startScan();
 });
