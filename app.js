@@ -209,8 +209,65 @@ function stopCamera() {
   }
 }
 
-// เรียก startCamera ตอนเริ่มต้นหรือเมื่อกดปุ่มสแกน
-startCamera();
+// เรียก startCamera เมื่อเริ่มต้นหรือเมื่อกดปุ่มสแกนใหม่
+// ตัวอย่าง: เรียก startCamera() เมื่อผู้ใช้ต้องการสแกน QR
+// startCamera();
+
+// ใน loadFromQR ให้ปิดกล้องหลังโหลดโมเดลสำเร็จ
+function loadFromQR(qrUrl) {
+  const url = new URL(qrUrl);
+  const jsonUrl = url.searchParams.get("src") || qrUrl;
+
+  fetch(jsonUrl)
+    .then(res => res.json())
+    .then(data => {
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) {
+        infoContent.innerHTML = `
+          <h3>${data.name || ''}</h3>
+          <p>${data.description || ''}</p>
+          <p>${data.weight || ''}</p>
+          <p>${data.size || ''}</p>
+          <p>${data.nutritional_value || ''}</p>
+          <p>${data.shelf_life || ''}</p>
+          <p>${data.storage_conditions || ''}</p>
+          <p>${data.season || ''}</p>
+          <p>${data.origin || ''}</p>
+          <p>${data.fruit_type || ''}</p>
+          <p>${data.price_per_kg || ''}</p>
+          <p>${data.harvest_date || ''}</p>
+          <p>${data.fertilizer || ''}</p>
+          <p>${data.farm_name || ''}</p>
+          <p>${data.owner || ''}</p>
+        `;
+      }
+
+      // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
+      if (model) {
+        scene.remove(model);
+        model = null;
+      }
+      loadModel(data.model);
+
+      // ตั้งค่าสีพื้นหลัง
+      renderer.setClearColor(0xffffff, 1);
+      document.body.style.background = "#fff";
+
+      // ปิดกล้องหลังสแกนเสร็จ
+      stopCamera();
+
+      isScanning = false;
+      codeReader.reset();
+    })
+    .catch(err => {
+      // กรณีโหลด JSON ไม่สำเร็จ
+      console.error('โหลด JSON ไม่สำเร็จ:', err);
+      if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      stopCamera();
+      isScanning = false;
+      codeReader.reset();
+    });
+}
 
 // HTML Structure
 document.body.innerHTML = `
