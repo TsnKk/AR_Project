@@ -98,7 +98,7 @@ function loadFromQR(qrUrl) {
         video.style.display = "none";
       }
 
-      // แสดงปุ่มสแกนใหม่
+      // แสดงปุ่มสแกนใหม่ เฉพาะเมื่อมีโมเดล
       if (scanAgainBtn) scanAgainBtn.style.display = "block";
 
       isScanning = false;
@@ -108,6 +108,7 @@ function loadFromQR(qrUrl) {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      if (scanAgainBtn) scanAgainBtn.style.display = "none";
       isScanning = false;
       codeReader.reset();
     });
