@@ -247,3 +247,30 @@ if (scanAgainBtn) {
 
 // ในจุดที่รีเซ็ต (ก่อนสแกนใหม่หรือหน้าแรก) ให้ซ่อนปุ่ม
 if (scanAgainBtn) scanAgainBtn.style.display = "none";
+
+// แสดง/ซ่อนลูกศรเมื่อมีข้อมูลเกินกล่อง info-message
+const infoMessageEl = document.getElementById('info-message');
+const scrollArrow = document.getElementById('scroll-arrow');
+
+function updateScrollArrow() {
+  if (!infoMessageEl || !scrollArrow) return;
+  // ถ้ามี scroll bar แสดงลูกศร
+  if (infoMessageEl.scrollHeight > infoMessageEl.clientHeight + 5) {
+    // ถ้าเลื่อนถึงล่างสุดแล้ว ซ่อนลูกศร
+    if (infoMessageEl.scrollTop + infoMessageEl.clientHeight >= infoMessageEl.scrollHeight - 5) {
+      scrollArrow.style.display = "none";
+    } else {
+      scrollArrow.style.display = "block";
+    }
+  } else {
+    scrollArrow.style.display = "none";
+  }
+}
+if (infoMessageEl && scrollArrow) {
+  infoMessageEl.addEventListener('scroll', updateScrollArrow);
+  // อัปเดตเมื่อข้อมูลเปลี่ยน
+  const observer = new MutationObserver(updateScrollArrow);
+  observer.observe(infoMessageEl, { childList: true, subtree: true });
+  window.addEventListener('resize', updateScrollArrow);
+  setTimeout(updateScrollArrow, 500);
+}
