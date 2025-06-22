@@ -57,6 +57,7 @@ function loadFromQR(qrUrl) {
     .then(data => {
       // 📄 แสดงข้อมูลสินค้า
       const infoContent = document.getElementById('info-content');
+      const scanAgainBtn = document.getElementById('scan-again-btn');
       if (infoContent) {
         infoContent.innerHTML = `
           <h3>${data.name}</h3>
@@ -66,6 +67,9 @@ function loadFromQR(qrUrl) {
         `;
         infoBox.classList.add('has-data');
       }
+      // แสดงปุ่มสแกนใหม่หลังจากแสดงข้อมูลโมเดล
+      if (scanAgainBtn) scanAgainBtn.style.display = "block";
+
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
       if (model) {
         scene.remove(model);
@@ -182,8 +186,6 @@ navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
 
 // ✅ ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
-let isScanning = false; // ป้องกันการสแกนซ้อน
-
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
     // รีเซ็ตข้อมูลและสถานะ
@@ -192,8 +194,7 @@ if (scanAgainBtn) {
       infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
       infoBox.classList.remove('has-data');
     }
-    renderer.setClearColor(0x000000, 0);
-    document.body.style.background = "#181c20";
+    // รีเซ็ต scene
     if (model) {
       scene.remove(model);
       model = null;
@@ -203,6 +204,9 @@ if (scanAgainBtn) {
     isDragging = false;
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
+
+    // ซ่อนปุ่ม
+    scanAgainBtn.style.display = "none";
 
     // รีเซ็ต codeReader และ flag ก่อนเปิดกล้องใหม่
     codeReader.reset();
@@ -225,3 +229,6 @@ if (scanAgainBtn) {
     }, 1000);
   });
 }
+
+// ในจุดที่รีเซ็ต (ก่อนสแกนใหม่หรือหน้าแรก) ให้ซ่อนปุ่ม
+if (scanAgainBtn) scanAgainBtn.style.display = "none";
