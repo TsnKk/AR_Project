@@ -18,7 +18,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
-document.body.appendChild(renderer.domElement);
 
 // ✅ แสงพื้นฐาน
 const light = new THREE.HemisphereLight(0xffffff, 0x444444);
