@@ -4,8 +4,7 @@ import { GLTFLoader } from './GLTFLoader.js';
 
 // ✅ อ้างอิงองค์ประกอบ HTML
 const video = document.getElementById('video');
-const infoBox = document.getElementById('info-box');
-const scanAgainBtn = document.getElementById('scan-again-btn');
+const infoMessage = document.getElementById('info-message');
 
 // ✅ สร้าง Scene, Camera และ Renderer
 const scene = new THREE.Scene();
@@ -54,20 +53,15 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // 📄 แสดงข้อมูลสินค้า
-      const infoContent = document.getElementById('info-content');
-      const scanAgainBtn = document.getElementById('scan-again-btn');
-      if (infoContent) {
-        infoContent.innerHTML = `
+      // แสดงข้อมูลสินค้าใน info-message
+      if (infoMessage) {
+        infoMessage.innerHTML = `
           <h3>${data.name}</h3>
           <p>${data.description}</p>
           <p><strong>ราคา:</strong> ${data.price}</p>
           <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
         `;
-        infoBox.classList.add('has-data');
       }
-      // แสดงปุ่มสแกนใหม่หลังจากแสดงข้อมูลโมเดล
-      if (scanAgainBtn) scanAgainBtn.style.display = "block";
 
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
       if (model) {
@@ -86,15 +80,12 @@ function loadFromQR(qrUrl) {
         video.srcObject = null;
       }
 
-      // รีเซ็ต flag และ codeReader ทันทีหลังโหลดข้อมูล
       isScanning = false;
       codeReader.reset();
     })
     .catch(err => {
       console.error('โหลด JSON ไม่สำเร็จ:', err);
-      const infoContent = document.getElementById('info-content');
-      if (infoContent) infoContent.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-      infoBox.classList.remove('has-data');
+      if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
       isScanning = false;
       codeReader.reset();
     });
