@@ -106,11 +106,15 @@
 </head>
 <body>
   <div id="loading-screen" style="
-    position:fixed;top:0;left:0;width:100vw;height:100vh;
-    background:#181c20;z-index:9999;display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:1.5rem;font-family:'Sarabun',Arial,sans-serif;">
-    กำลังโหลด...
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:#181c20;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:#fff;font-size:1.5rem;font-family:'Sarabun',Arial,sans-serif;">
+  <div style="font-size:2rem;font-weight:bold;margin-bottom:24px;">WebAR Demo</div>
+  <div style="margin-bottom:16px;">กำลังโหลด...</div>
+  <div id="loading-bar-bg" style="width:220px;height:16px;background:#23262b;border-radius:8px;overflow:hidden;">
+    <div id="loading-bar" style="width:0%;height:100%;background:#00c896;transition:width 0.3s;"></div>
   </div>
+</div>
   
   <!-- 🎥 วิดีโอแสดงภาพจากกล้อง -->
   <video id="video" autoplay muted playsinline></video>
@@ -144,11 +148,21 @@
     }
   </script>
   <script>
-  window.addEventListener('DOMContentLoaded', () => {
-    // เมื่อทุกอย่างโหลดเสร็จ ค่อยซ่อนหน้าโหลด
-    window.addEventListener('load', () => {
+  // Loading bar animation
+  let progress = 0;
+  const bar = document.getElementById('loading-bar');
+  const interval = setInterval(() => {
+    progress += Math.random() * 10 + 5; // เพิ่มทีละ 5-15%
+    if (progress > 100) progress = 100;
+    bar.style.width = progress + '%';
+    if (progress >= 100) clearInterval(interval);
+  }, 200);
+
+  // รออย่างน้อย 2200ms ก่อนซ่อน loading screen
+  window.addEventListener('load', () => {
+    setTimeout(() => {
       document.getElementById('loading-screen').style.display = 'none';
-    });
+    }, 2200);
   });
 </script>
 </body>
