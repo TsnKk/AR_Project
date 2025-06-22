@@ -168,6 +168,8 @@ navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
 
 // ✅ ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
+let isScanning = false; // ป้องกันการสแกนซ้อน
+
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
     // รีเซ็ตข้อมูลและสถานะ
@@ -184,17 +186,22 @@ if (scanAgainBtn) {
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
 
+    // รีเซ็ต codeReader และ flag
+    codeReader.reset();
+    isScanning = false;
+
     // Delay 1 วินาทีก่อนเปิดกล้องและเริ่มสแกนใหม่
     setTimeout(() => {
       navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
         .then(stream => {
           video.srcObject = stream;
-          codeReader.reset();
           codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-            if (result) {
+            if (result && !isScanning) {
+              isScanning = true; // ป้องกัน callback ซ้อน
               const url = result.getText();
               console.log('QR Detected:', url);
               loadFromQR(url);
+              codeReader.reset(); // หยุดสแกนทันทีที่เจอ QR
             }
           });
         });
