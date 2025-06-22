@@ -140,18 +140,6 @@
         max-width: 100vw;
       }
     }
-    #scroll-arrow {
-      position: absolute;
-      right: 24px;
-      bottom: 16px;
-      font-size: 2.2rem;
-      color: #fff;
-      opacity: 0.7;
-      z-index: 30;
-      pointer-events: none;
-      transition: opacity 0.2s;
-      user-select: none;
-    }
   </style>
 </head>
 <body>
@@ -178,7 +166,6 @@
 
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message">
-    <button id="scan-again-btn" style="position:absolute;top:12px;right:18px;z-index:40;">สแกนใหม่</button>
     <div id="info-content">
       สแกน QR Code เพื่อดูรายละเอียดโมเดล
     </div>
