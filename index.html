@@ -137,12 +137,25 @@
   <!-- ⏩ ปุ่มเข้าโหมด AR -->
   <button id="ar-btn">👓 ดูโมเดลในโลกจริง (AR)</button>
 
-  <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (ลบ info-box เดิมออก) -->
+  <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message" style="
-    position:fixed;top:16px;left:16px;z-index:20;
-    background:rgba(30,32,36,0.95);color:#fff;
-    padding:18px 24px;border-radius:12px;
-    font-size:1.1rem;max-width:350px;box-shadow:0 2px 8px rgba(0,0,0,0.2);">
+    position:fixed;
+    left:50%;
+    bottom:0;
+    transform:translateX(-50%);
+    z-index:20;
+    background:rgba(30,32,36,0.95);
+    color:#fff;
+    padding:18px 24px;
+    border-radius:12px 12px 0 0;
+    font-size:1.1rem;
+    max-width:500px;
+    width:100vw;
+    box-shadow:0 -2px 8px rgba(0,0,0,0.2);
+    max-height:35vh;
+    overflow-y:auto;
+    text-align:left;
+    ">
     สแกน QR Code เพื่อดูรายละเอียดโมเดล
   </div>
 
