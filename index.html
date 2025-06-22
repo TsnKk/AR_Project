@@ -34,9 +34,8 @@
       width: 100%;
       max-width: 500px;
       max-height: 35vh; /* จำกัดความสูง */
-      overflow-y: auto; /* เลื่อนขึ้น-ลงได้ */
+      overflow-y: auto; /* ให้เลื่อนทั้งกล่อง */
       background: rgba(30, 32, 36, 0.98);
-      padding: 16px 0 0 0; /* เอา padding-top ออก เพื่อให้ปุ่มแนบ */
       font-family: 'Sarabun', Arial, sans-serif;
       box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
       z-index: 10;
@@ -46,12 +45,17 @@
       box-sizing: border-box;
       color: #fff;
       font-size: 1.1rem;
-      text-align: center;
       letter-spacing: 0.01em;
       scrollbar-width: thin;
       display: flex;
       flex-direction: column;
       align-items: stretch;
+      padding: 0; /* เอา padding-top ออก */
+    }
+    #info-box.has-data {
+      text-align: left;
+      padding-left: 24px;
+      padding-right: 24px;
     }
     #info-box::-webkit-scrollbar {
       width: 8px;
@@ -60,18 +64,25 @@
       background: #23262b;
       border-radius: 8px;
     }
-    @media (max-width: 600px) {
-      #info-box {
-        font-size: 1rem;
-        padding: 10px;
-      }
+    #scan-again-btn {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      border: none;
+      background: #23262b;
+      color: #fff;
+      font-size: 1.1rem;
+      font-family: 'Sarabun', Arial, sans-serif;
+      font-weight: bold;
+      padding: 14px 0;
+      cursor: pointer;
+      box-shadow: none;
+      z-index: 11;
+      position: relative;
+      transition: background 0.2s;
     }
-    #info-box.has-data {
-      text-align: left;
-      padding-left: 24px;
-      padding-right: 24px;
+    #scan-again-btn:hover {
+      background: #00c896;
     }
-
     /* ⏩ ปุ่มเข้าโหมด AR */
     #ar-btn {
       position: fixed;
@@ -94,35 +105,11 @@
     #ar-btn:hover {
       background: #009e74;
     }
-
-    /* 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ */
-    #scan-again-btn {
-      position: fixed;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: 110px; /* อยู่เหนือ info-box เสมอ */
-      z-index: 21; /* มากกว่า info-box */
-      background: rgba(30, 32, 36, 0.98);
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 32px;
-      font-size: 1.1rem;
-      font-family: 'Sarabun', Arial, sans-serif;
-      font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-      cursor: pointer;
-      letter-spacing: 0.01em;
-      transition: background 0.2s;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 12px 12px 0 0;
-      margin: 0 auto;
-      padding: 14px 0;
-      position: static; /* ไม่ fixed แล้ว */
-    }
-    #scan-again-btn:hover {
-      background: #00c896;
+    @media (max-width: 600px) {
+      #info-box {
+        font-size: 1rem;
+        padding: 10px;
+      }
     }
   </style>
 </head>
@@ -165,7 +152,7 @@
   <script>
     // 🟢 ฟังก์ชันเปลี่ยนข้อความ info-box (ให้ app.js เรียกใช้)
     window.setInfoBox = function(text) {
-      document.getElementById('info-box').textContent = text;
+      document.getElementById('info-content').innerHTML = text;
     }
 
     // 🟢 Loading bar animation
