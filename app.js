@@ -61,14 +61,14 @@ function loadFromQR(qrUrl) {
         infoContent.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
-          <p><strong>ราคา:</strong> ${data.price || ''}</p>
-          <p><strong>แหล่งที่มา:</strong> ${data.origin || ''}</p>
-          <p><strong>${data.fruit_type || ''}</strong></p>
-          <p><strong>${data.price_per_kg || ''}</strong></p>
-          <p><strong>${data.harvest_date ? 'วันที่เก็บ: ' + data.harvest_date : ''}</strong></p>
-          <p><strong>${data.fertilizer ? 'ปุ๋ยที่ใช้: ' + data.fertilizer : ''}</strong></p>
-          <p><strong>${data.farm_name ? 'ชื่อสวน: ' + data.farm_name : ''}</strong></p>
-          <p><strong>${data.owner ? 'เจ้าของสวน: ' + data.owner : ''}</strong></p>
+          <p><b>ราคา:</b> ${data.price || ''}</p>
+          <p>${data.origin || ''}</p>
+          <p>${data.fruit_type || ''}</p>
+          <p>${data.price_per_kg || ''}</p>
+          <p>${data.harvest_date ? 'วันที่เก็บ: ' + data.harvest_date : ''}</p>
+          <p>${data.fertilizer ? 'ปุ๋ยที่ใช้: ' + data.fertilizer : ''}</p>
+          <p>${data.farm_name ? 'ชื่อสวน: ' + data.farm_name : ''}</p>
+          <p>${data.owner ? 'เจ้าของสวน: ' + data.owner : ''}</p>
         `;
       }
 
@@ -155,7 +155,7 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.03; // ปรับความเร็วการหมุนที่นี่
+      rotationY += 0.02; // ปรับความเร็วการหมุนที่นี่
     }
     model.rotation.y = rotationY;
   }
@@ -187,54 +187,6 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
 
-// ✅ ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
-if (scanAgainBtn) {
-  scanAgainBtn.addEventListener('click', () => {
-    // รีเซ็ตข้อมูลและสถานะ
-    const infoContent = document.getElementById('info-content');
-    if (infoContent) {
-      infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
-      infoBox.classList.remove('has-data');
-    }
-    // รีเซ็ต scene
-    if (model) {
-      scene.remove(model);
-      model = null;
-    }
-    rotationY = 0;
-    autoRotate = true;
-    isDragging = false;
-    camera.position.set(0, 0, 5);
-    camera.lookAt(0, 0, 0);
-
-    // ซ่อนปุ่ม
-    scanAgainBtn.style.display = "none";
-
-    // รีเซ็ต codeReader และ flag ก่อนเปิดกล้องใหม่
-    codeReader.reset();
-    isScanning = false;
-
-    setTimeout(() => {
-      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-        .then(stream => {
-          video.srcObject = stream;
-          isScanning = false;
-          codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-            if (result && !isScanning) {
-              isScanning = true;
-              const url = result.getText();
-              loadFromQR(url);
-              codeReader.reset(); // หยุดสแกนทันทีหลังเจอ QR
-            }
-          });
-        });
-    }, 1000);
-  });
-}
-
-// ในจุดที่รีเซ็ต (ก่อนสแกนใหม่หรือหน้าแรก) ให้ซ่อนปุ่ม
-if (scanAgainBtn) scanAgainBtn.style.display = "none";
-
 // ✅ แสดง/ซ่อนลูกศรเลื่อนลงใน info-message
 function updateScrollArrow() {
   const infoMessage = document.getElementById('info-message');
@@ -252,9 +204,11 @@ function updateScrollArrow() {
 if (infoMessage) {
   infoMessage.addEventListener('scroll', updateScrollArrow);
   // เรียกตอนโหลดข้อมูลใหม่ด้วย
-  const origSetInnerHTML = infoMessage.__proto__.innerHTML;
+  const infoContent = document.getElementById('info-content');
   const observer = new MutationObserver(() => setTimeout(updateScrollArrow, 50));
-  observer.observe(infoContent, { childList: true, subtree: true });
+  if (infoContent) {
+    observer.observe(infoContent, { childList: true, subtree: true });
+  }
   // เรียกครั้งแรก
   window.addEventListener('DOMContentLoaded', updateScrollArrow);
 }
