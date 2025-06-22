@@ -200,8 +200,10 @@ navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
 
 const scanAgainBtn = document.getElementById('scan-again-btn');
 
-// ซ่อนปุ่มสแกนใหม่ตอนเริ่มต้น
-if (scanAgainBtn) scanAgainBtn.style.display = "none";
+// ให้ปุ่ม "สแกนใหม่" โชว์ตลอดเวลา (ยกเลิก display:none)
+if (scanAgainBtn) {
+  scanAgainBtn.style.display = "block";
+}
 
 // ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
 if (scanAgainBtn) {
