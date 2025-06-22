@@ -56,8 +56,9 @@ function loadFromQR(qrUrl) {
     .then(res => res.json())
     .then(data => {
       // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์)
-      if (infoMessage) {
-        infoMessage.innerHTML = `
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) {
+        infoContent.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
           <p><strong>ราคา:</strong> ${data.price || ''}</p>
@@ -154,7 +155,7 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.05; // ปรับความเร็วการหมุนที่นี่
+      rotationY += 0.03; // ปรับความเร็วการหมุนที่นี่
     }
     model.rotation.y = rotationY;
   }
@@ -253,7 +254,7 @@ if (infoMessage) {
   // เรียกตอนโหลดข้อมูลใหม่ด้วย
   const origSetInnerHTML = infoMessage.__proto__.innerHTML;
   const observer = new MutationObserver(() => setTimeout(updateScrollArrow, 50));
-  observer.observe(infoMessage, { childList: true, subtree: true });
+  observer.observe(infoContent, { childList: true, subtree: true });
   // เรียกครั้งแรก
   window.addEventListener('DOMContentLoaded', updateScrollArrow);
 }
