@@ -146,7 +146,7 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.01;
+      rotationY += 0.1;
     }
     model.rotation.y = rotationY;
   }

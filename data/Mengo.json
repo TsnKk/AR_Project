@@ -1,7 +1,13 @@
 {
   "model": "https://arprojectdemo.netlify.app/data/Mengo.glb",
-  "name": "Mengo",
-  "description": "This is a 3D model of a Mengo.",
+  "name": "มะม่วงน้ำดอกไม้",
+  "description": "มะม่วงน้ำดอกไม้สีทอง หวานฉ่ำ สดใหม่จากสวน",
   "price": "60 THB",
-  "origin": "Thailand"
+  "origin": "ตำแหน่งสวน : นครนายก ประเทศไทย",
+  "fruit_type": "ชนิดผลไม้ : มะม่วงน้ำดอกไม้",
+  "price_per_kg": "ราคาต่อกิโล : 60 บาท",
+  "harvest_date": "วันที่เก็บ : 5 มิถุนายน 2025",
+  "fertilizer": "ปุ๋ยที่ใช้ : ปุ๋ยอินทรีย์สูตร 12-12-17",
+  "farm_name": "ชื่อสวน : สวนมะม่วงทองดี",
+  "owner": "เจ้าของสวน : คุณทองดี ใจดี"
 }

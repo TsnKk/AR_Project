@@ -1,13 +1,13 @@
 {
   "model": "https://arprojectdemo.netlify.app/data/bigger-durian.glb",
-  "name": "durian",
-  "description": "This is a 3D model of a durian.",
+  "name": "ทุเรียนหมอนทอง",
+  "description": "ทุเรียนหมอนทองคุณภาพดี เนื้อแน่น หวานมัน ส่งตรงจากสวน",
   "price": "100 THB",
-  "origin": "Thailand",
-  "fruit_type": "ชนิดผลไม้",
-  "price_per_kg": "ราคาต่อกิโล",
-  "harvest_date": "วันที่เก็บ",
-  "fertilizer": "ปุ๋ยที่ใช้",
-  "farm_name": "ชื่อสวน",
-  "farm_location": "ตำแหน่งสวน"
+  "origin": "ตำแหน่งสวน : จันทบุรี ประเทศไทย",
+  "fruit_type": "ชนิดผลไม้ : ทุเรียน",
+  "price_per_kg": "ราคาต่อกิโล : 120 บาท",
+  "harvest_date": "วันที่เก็บ : 15 มิถุนายน 2025",
+  "fertilizer": "ปุ๋ยที่ใช้ : ปุ๋ยอินทรีย์สูตร 15-15-15",
+  "farm_name": "ชื่อสวน : สวนทุเรียนบ้านสวน",
+  "owner": "เจ้าของสวน : คุณสมชาย ใจดี"
 }
