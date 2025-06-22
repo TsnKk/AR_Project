@@ -8,7 +8,7 @@ const infoBox = document.getElementById('info-box');  // กล่องแส�
 const scanAgainBtn = document.getElementById('scan-again-btn');
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
-    // รีเซ็ตข้อมูลทุกอย่างให้เหมือนตอนเข้าเว็บใหม่
+    // รีเซ็ตข้อมูล
     if (infoBox) infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
     renderer.setClearColor(0x000000, 0); // กลับเป็นโปร่งใสหรือสีเดิม
     document.body.style.background = "#181c20";
@@ -23,12 +23,21 @@ if (scanAgainBtn) {
     // รีเซ็ตกล้อง (ถ้ามีการเปลี่ยนแปลง)
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
-    // เปิดกล้องใหม่
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => video.srcObject = stream);
 
-    // รีเซ็ตการสแกน QR
-    codeReader.reset();
+    // เปิดกล้องใหม่ (ถ้ายังไม่ได้เปิด)
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        video.srcObject = stream;
+        // เริ่มสแกน QR ใหม่
+        codeReader.reset();
+        codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+          if (result) {
+            const url = result.getText();
+            console.log('QR Detected:', url);
+            loadFromQR(url);
+          }
+        });
+      });
   });
 }
 
@@ -68,23 +77,23 @@ let model = null; // เก็บโมเดลปัจจุบัน
 // ✅ โหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
-loader.load(url, gltf => {
-  if (model) {
-    scene.remove(model);
-    model.traverse(child => {
-      if (child.isMesh) {
-        child.geometry.dispose();
-        child.material.dispose();
-      }
-    });
-    model = null;
-  }
-  // ✅ เพิ่มโมเดลใหม่เข้า Scene
-  model = gltf.scene;
-  model.scale.set(1.0, 1.0, 1.0); // ปรับขนาดเล็กลง
-  model = gltf.scene; // <<== ต้องเพิ่มบรรทัดนี้
-  scene.add(model);
-}, undefined, error => console.error('Error loading model:', error));
+  loader.load(url, gltf => {
+    if (model) {
+      scene.remove(model);
+      model.traverse(child => {
+        if (child.isMesh) {
+          child.geometry.dispose();
+          child.material.dispose();
+        }
+      });
+      model = null;
+    }
+    // ✅ เพิ่มโมเดลใหม่เข้า Scene
+    model = gltf.scene;
+    model.scale.set(1.0, 1.0, 1.0); // ปรับขนาดเล็กลง
+    model.position.y = 0.5; // ขยับโมเดลขึ้น 10% ของฉาก (ประมาณ 0.5 หน่วย)
+    scene.add(model);
+  }, undefined, error => console.error('Error loading model:', error));
     }
     
 
