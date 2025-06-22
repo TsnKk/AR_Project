@@ -23,6 +23,10 @@ if (scanAgainBtn) {
     // รีเซ็ตกล้อง (ถ้ามีการเปลี่ยนแปลง)
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
+    // เปิดกล้องใหม่
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => video.srcObject = stream);
+
     // รีเซ็ตการสแกน QR
     codeReader.reset();
   });
@@ -108,6 +112,13 @@ function loadFromQR(qrUrl) {
       // เปลี่ยนพื้นหลังเป็นสีขาวล้วน
       renderer.setClearColor(0xffffff, 1);
       document.body.style.background = "#fff";
+
+      // ปิดกล้อง
+      if (video && video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+      }
     })
     .catch(err => {
       console.error('โหลด JSON ไม่สำเร็จ:', err);
