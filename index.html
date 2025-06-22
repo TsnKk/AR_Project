@@ -77,13 +77,21 @@
       font-family: 'Sarabun', Arial, sans-serif;
       box-sizing: border-box;
       margin: 0;
+      /* เพื่อให้ลูกศรอยู่ในกล่อง */
+      position: fixed;
     }
-    #info-message::-webkit-scrollbar {
-      width: 8px;
-    }
-    #info-message::-webkit-scrollbar-thumb {
-      background: #23262b;
-      border-radius: 8px;
+    #scroll-arrow {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #fff;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 30;
+      display: none;
+      transition: opacity 0.2s;
     }
     #scan-again-btn {
       width: 100%;
@@ -167,6 +175,19 @@
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message">
     สแกน QR Code เพื่อดูรายละเอียดโมเดล
+    <div id="scroll-arrow" style="
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #fff;
+      opacity: 0.7;
+      pointer-events: none;
+      z-index: 30;
+      display: none;
+      transition: opacity 0.2s;
+    ">▼</div>
   </div>
 
   <!-- 🔍 โหลดไลบรารี ZXing สำหรับสแกน QR Code -->

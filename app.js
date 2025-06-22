@@ -42,7 +42,7 @@ function loadModel(url) {
     // เพิ่มโมเดลใหม่เข้า scene
     model = gltf.scene;
     model.scale.set(1.0, 1.0, 1.0);
-    model.position.y = 0.5; // ขยับโมเดลขึ้นเล็กน้อย
+    model.position.y = 0.3; // ขยับโมเดลขึ้นเล็กน้อย
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
@@ -233,3 +233,27 @@ if (scanAgainBtn) {
 
 // ในจุดที่รีเซ็ต (ก่อนสแกนใหม่หรือหน้าแรก) ให้ซ่อนปุ่ม
 if (scanAgainBtn) scanAgainBtn.style.display = "none";
+
+// ✅ แสดง/ซ่อนลูกศรเลื่อนลงใน info-message
+function updateScrollArrow() {
+  const infoMessage = document.getElementById('info-message');
+  const scrollArrow = document.getElementById('scroll-arrow');
+  if (!infoMessage || !scrollArrow) return;
+  // ถ้า scroll ยังไม่สุดล่าง ให้โชว์ลูกศร
+  if (infoMessage.scrollHeight - infoMessage.scrollTop > infoMessage.clientHeight + 2) {
+    scrollArrow.style.display = 'block';
+  } else {
+    scrollArrow.style.display = 'none';
+  }
+}
+
+// เรียกเมื่อโหลดข้อมูลใหม่
+if (infoMessage) {
+  infoMessage.addEventListener('scroll', updateScrollArrow);
+  // เรียกตอนโหลดข้อมูลใหม่ด้วย
+  const origSetInnerHTML = infoMessage.__proto__.innerHTML;
+  const observer = new MutationObserver(() => setTimeout(updateScrollArrow, 50));
+  observer.observe(infoMessage, { childList: true, subtree: true });
+  // เรียกครั้งแรก
+  window.addEventListener('DOMContentLoaded', updateScrollArrow);
+}
