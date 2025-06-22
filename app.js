@@ -42,7 +42,7 @@ function loadModel(url) {
     // เพิ่มโมเดลใหม่เข้า scene
     model = gltf.scene;
     model.scale.set(1.0, 1.0, 1.0);
-    model.position.y = 0.3; // ขยับโมเดลขึ้นเล็กน้อย
+    model.position.y = 0.5; // ขยับโมเดลขึ้นเล็กน้อย
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
@@ -55,24 +55,19 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      const infoContent = document.getElementById('info-content');
-      if (infoContent) {
-        infoContent.innerHTML = `
+      // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์)
+      if (infoMessage) {
+        infoMessage.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
-          <p>${data.weight || ''}</p>
-          <p>${data.size || ''}</p>
-          <p>${data.nutritional_value || ''}</p>
-          <p>${data.shelf_life || ''}</p>
-          <p>${data.storage_conditions || ''}</p>
-          <p>${data.season || ''}</p>
-          <p>${data.origin || ''}</p>
-          <p>${data.fruit_type || ''}</p>
-          <p>${data.price_per_kg || ''}</p>
-          <p>${data.harvest_date || ''}</p>
-          <p>${data.fertilizer || ''}</p>
-          <p>${data.farm_name || ''}</p>
-          <p>${data.owner || ''}</p>
+          <p><strong>ราคา:</strong> ${data.price || ''}</p>
+          <p><strong>แหล่งที่มา:</strong> ${data.origin || ''}</p>
+          <p><strong>${data.fruit_type || ''}</strong></p>
+          <p><strong>${data.price_per_kg || ''}</strong></p>
+          <p><strong>${data.harvest_date ? 'วันที่เก็บ: ' + data.harvest_date : ''}</strong></p>
+          <p><strong>${data.fertilizer ? 'ปุ๋ยที่ใช้: ' + data.fertilizer : ''}</strong></p>
+          <p><strong>${data.farm_name ? 'ชื่อสวน: ' + data.farm_name : ''}</strong></p>
+          <p><strong>${data.owner ? 'เจ้าของสวน: ' + data.owner : ''}</strong></p>
         `;
       }
 
@@ -88,7 +83,11 @@ function loadFromQR(qrUrl) {
       document.body.style.background = "#fff";
 
       // ปิดกล้องหลังสแกนเสร็จ
-      stopCamera();
+      if (video && video.srcObject) {
+        const tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        video.srcObject = null;
+      }
 
       isScanning = false;
       codeReader.reset();
@@ -97,7 +96,6 @@ function loadFromQR(qrUrl) {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-      stopCamera();
       isScanning = false;
       codeReader.reset();
     });
@@ -156,7 +154,7 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.02; // ปรับความเร็วการหมุนที่นี่
+      rotationY += 0.05; // ปรับความเร็วการหมุนที่นี่
     }
     model.rotation.y = rotationY;
   }
@@ -175,168 +173,63 @@ window.addEventListener('resize', () => {
 // ✅ ตั้งค่า QR Code Scanner ด้วย ZXing
 const codeReader = new ZXing.BrowserMultiFormatReader();
 let isScanning = false;
+codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+  if (result && !isScanning) {
+    isScanning = true;
+    const url = result.getText();
+    console.log('QR Detected:', url);
+    loadFromQR(url);
+  }
+});
 
-// ฟังก์ชันเปิดกล้อง (แสดง video)
-function startCamera() {
-  const video = document.getElementById('video');
-  if (video) {
-    video.style.display = 'block';
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => {
-        video.srcObject = stream;
-        codeReader.decodeFromVideoDevice(null, 'video', (result, err) => {
-          if (result && !isScanning) {
-            isScanning = true;
-            const url = result.getText();
-            loadFromQR(url);
-          }
+// ✅ เปิดกล้องหลังเมื่อเข้าเว็บ
+navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+  .then(stream => video.srcObject = stream);
+
+// ✅ ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
+if (scanAgainBtn) {
+  scanAgainBtn.addEventListener('click', () => {
+    // รีเซ็ตข้อมูลและสถานะ
+    const infoContent = document.getElementById('info-content');
+    if (infoContent) {
+      infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+      infoBox.classList.remove('has-data');
+    }
+    // รีเซ็ต scene
+    if (model) {
+      scene.remove(model);
+      model = null;
+    }
+    rotationY = 0;
+    autoRotate = true;
+    isDragging = false;
+    camera.position.set(0, 0, 5);
+    camera.lookAt(0, 0, 0);
+
+    // ซ่อนปุ่ม
+    scanAgainBtn.style.display = "none";
+
+    // รีเซ็ต codeReader และ flag ก่อนเปิดกล้องใหม่
+    codeReader.reset();
+    isScanning = false;
+
+    setTimeout(() => {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          video.srcObject = stream;
+          isScanning = false;
+          codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+            if (result && !isScanning) {
+              isScanning = true;
+              const url = result.getText();
+              loadFromQR(url);
+              codeReader.reset(); // หยุดสแกนทันทีหลังเจอ QR
+            }
+          });
         });
-      })
-      .catch(err => {
-        console.error('ไม่สามารถเปิดกล้องได้:', err);
-      });
-  }
+    }, 1000);
+  });
 }
 
-// ฟังก์ชันปิดกล้อง (ซ่อน video)
-function stopCamera() {
-  const video = document.getElementById('video');
-  if (video && video.srcObject) {
-    const tracks = video.srcObject.getTracks();
-    tracks.forEach(track => track.stop());
-    video.srcObject = null;
-    video.style.display = 'none';
-  }
-}
-
-// เรียก startCamera เมื่อเริ่มต้นหรือเมื่อกดปุ่มสแกนใหม่
-// ตัวอย่าง: เรียก startCamera() เมื่อผู้ใช้ต้องการสแกน QR
-// startCamera();
-
-// ใน loadFromQR ให้ปิดกล้องหลังโหลดโมเดลสำเร็จ
-function loadFromQR(qrUrl) {
-  const url = new URL(qrUrl);
-  const jsonUrl = url.searchParams.get("src") || qrUrl;
-
-  fetch(jsonUrl)
-    .then(res => res.json())
-    .then(data => {
-      const infoContent = document.getElementById('info-content');
-      if (infoContent) {
-        infoContent.innerHTML = `
-          <h3>${data.name || ''}</h3>
-          <p>${data.description || ''}</p>
-          <p>${data.weight || ''}</p>
-          <p>${data.size || ''}</p>
-          <p>${data.nutritional_value || ''}</p>
-          <p>${data.shelf_life || ''}</p>
-          <p>${data.storage_conditions || ''}</p>
-          <p>${data.season || ''}</p>
-          <p>${data.origin || ''}</p>
-          <p>${data.fruit_type || ''}</p>
-          <p>${data.price_per_kg || ''}</p>
-          <p>${data.harvest_date || ''}</p>
-          <p>${data.fertilizer || ''}</p>
-          <p>${data.farm_name || ''}</p>
-          <p>${data.owner || ''}</p>
-        `;
-      }
-
-      // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
-      if (model) {
-        scene.remove(model);
-        model = null;
-      }
-      loadModel(data.model);
-
-      // ตั้งค่าสีพื้นหลัง
-      renderer.setClearColor(0xffffff, 1);
-      document.body.style.background = "#fff";
-
-      // ปิดกล้องหลังสแกนเสร็จ
-      stopCamera();
-
-      isScanning = false;
-      codeReader.reset();
-    })
-    .catch(err => {
-      // กรณีโหลด JSON ไม่สำเร็จ
-      console.error('โหลด JSON ไม่สำเร็จ:', err);
-      if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-      stopCamera();
-      isScanning = false;
-      codeReader.reset();
-    });
-}
-
-// HTML Structure
-document.body.innerHTML = `
-  <video id="video" style="display:none;"></video>
-  <canvas id="canvas"></canvas>
-  <div id="info-message">
-    <div id="info-content">
-      สแกน QR Code เพื่อดูรายละเอียดโมเดล
-    </div>
-    <div id="scroll-arrow">▼</div>
-  </div>
-`;
-
-// CSS Styles
-const style = document.createElement('style');
-style.textContent = `
-  body {
-    margin: 0;
-    overflow: hidden;
-  }
-
-  #video {
-    display: none;
-  }
-
-  #canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-  }
-
-  #info-message {
-    position: fixed;
-    left: 50%;
-    bottom: 0;
-    transform: translateX(-50%);
-    z-index: 20;
-    background: rgba(30,32,36,0.95);
-    color: #fff;
-    padding: 18px 32px 18px 32px;
-    border-radius: 12px 12px 0 0;
-    font-size: 1.1rem;
-    max-width: 500px;
-    width: calc(100vw - 32px);
-    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
-    max-height: 35vh;
-    overflow-y: auto;
-    text-align: left;
-    font-family: 'Sarabun', Arial, sans-serif;
-    box-sizing: border-box;
-    margin: 0;
-    position: fixed;
-    /* เพิ่ม relative เพื่อให้ลูกศร absolute ได้ */
-    position: fixed;
-  }
-
-  #scroll-arrow {
-    position: absolute;
-    right: 18px;      /* ขยับจากขอบขวา */
-    bottom: 12px;     /* ขยับจากขอบล่าง */
-    font-size: 2rem;
-    color: #fff;
-    opacity: 0.7;
-    pointer-events: none;
-    z-index: 30;
-    display: none;
-    transition: opacity 0.2s;
-  }
-`;
-document.head.appendChild(style);
+// ในจุดที่รีเซ็ต (ก่อนสแกนใหม่หรือหน้าแรก) ให้ซ่อนปุ่ม
+if (scanAgainBtn) scanAgainBtn.style.display = "none";
