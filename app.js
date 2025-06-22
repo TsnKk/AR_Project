@@ -55,26 +55,25 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์)
       const infoContent = document.getElementById('info-content');
       if (infoContent) {
         infoContent.innerHTML = `
-    <h3>${data.name || ''}</h3>
-    <p>${data.description || ''}</p>
-    <p>${data.weight || ''}</p>
-    <p>${data.size || ''}</p>
-    <p>${data.nutritional_value || ''}</p>
-    <p>${data.shelf_life || ''}</p>
-    <p>${data.storage_conditions || ''}</p>
-    <p>${data.season || ''}</p>
-    <p>${data.origin || ''}</p>
-    <p>${data.fruit_type || ''}</p>
-    <p>${data.price_per_kg || ''}</p>
-    <p>${data.harvest_date || ''}</p>
-    <p>${data.fertilizer || ''}</p>
-    <p>${data.farm_name || ''}</p>
-    <p>${data.owner || ''}</p>
-  `;
+        <h3>${data.name || ''}</h3>
+        <p>${data.description || ''}</p>
+        <p>${data.weight || ''}</p>
+        <p>${data.size || ''}</p>
+        <p>${data.nutritional_value || ''}</p>
+        <p>${data.shelf_life || ''}</p>
+        <p>${data.storage_conditions || ''}</p>
+        <p>${data.season || ''}</p>
+        <p>${data.origin || ''}</p>
+        <p>${data.fruit_type || ''}</p>
+        <p>${data.price_per_kg || ''}</p>
+        <p>${data.harvest_date || ''}</p>
+        <p>${data.fertilizer || ''}</p>
+        <p>${data.farm_name || ''}</p>
+        <p>${data.owner || ''}</p>
+      `;
       }
 
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
