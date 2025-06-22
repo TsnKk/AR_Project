@@ -68,7 +68,7 @@
       width: 100%;
       border-radius: 12px 12px 0 0;
       border: none;
-      background: #23262b;
+      background: #5a5d62; /* สีเทาอ่อนขึ้น */
       color: #fff;
       font-size: 1.1rem;
       font-family: 'Sarabun', Arial, sans-serif;
@@ -80,8 +80,10 @@
       position: relative;
       transition: background 0.2s;
     }
-    #scan-again-btn:hover {
-      background: #00c896;
+    #scan-again-btn:hover,
+    #scan-again-btn:active,
+    #scan-again-btn:focus {
+      background: #00c896; /* สีเขียวเมื่อ hover */
     }
     /* ⏩ ปุ่มเข้าโหมด AR */
     #ar-btn {
