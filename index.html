@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
   <title>WebAR Demo</title>
-
   <style>
     /* 🔧 รีเซ็ตค่าเริ่มต้นของหน้า */
     html, body {
@@ -28,26 +27,26 @@
 
     /* 🧾 กล่องแสดงข้อมูล */
     #info-box {
-  position: fixed;
-  bottom: 0;
-  left: 50%; /* ✅ จัดให้กรอบอยู่ตรงกลางแนวนอน */
-  transform: translateX(-50%); /* ✅ เลื่อนกรอบกลับมาครึ่งหนึ่งของตัวเอง */
-  width: 100%;
-  max-width: 500px;             /* ✅ จำกัดความกว้างไม่ให้กว้างเกิน */
-  background: rgba(30, 32, 36, 0.98);
-  padding: 16px;
-  font-family: 'Sarabun', Arial, sans-serif;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-  pointer-events: none;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  box-sizing: border-box;
-  color: #fff;
-  font-size: 1.1rem;
-  text-align: center;
-  letter-spacing: 0.01em;
-}
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 500px;
+      background: rgba(30, 32, 36, 0.98);
+      padding: 16px;
+      font-family: 'Sarabun', Arial, sans-serif;
+      box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
+      z-index: 10;
+      pointer-events: none;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      box-sizing: border-box;
+      color: #fff;
+      font-size: 1.1rem;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
     @media (max-width: 600px) {
       #info-box {
         font-size: 1rem;
@@ -74,47 +73,47 @@
       display: none;
       transition: background 0.2s;
     }
-
     #ar-btn:hover {
       background: #009e74;
     }
 
-    /* ปุ่มสำหรับสแกน QR Code ใหม่ */
+    /* 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ */
     #scan-again-btn {
-  position: fixed;
-  bottom: 20vh; /* ขยับปุ่มขึ้นสูงขึ้น 20% ของความสูงหน้าจอ */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 20;
-  background: rgba(30, 32, 36, 0.98);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 12px 32px;
-  font-size: 1.1rem;
-  font-family: 'Sarabun', Arial, sans-serif;
-  font-weight: bold;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  cursor: pointer;
-  letter-spacing: 0.01em;
-  transition: background 0.2s;
-}
-#scan-again-btn:hover {
-  background: #23262b;
-}
+      position: fixed;
+      bottom: 20vh; /* ขยับปุ่มขึ้นสูงขึ้น 20% ของความสูงหน้าจอ */
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      background: rgba(30, 32, 36, 0.98);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 32px;
+      font-size: 1.1rem;
+      font-family: 'Sarabun', Arial, sans-serif;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: background 0.2s;
+    }
+    #scan-again-btn:hover {
+      background: #23262b;
+    }
   </style>
 </head>
 <body>
+  <!-- 🟢 Loading Screen -->
   <div id="loading-screen" style="
-  position:fixed;top:0;left:0;width:100vw;height:100vh;
-  background:#181c20;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  color:#fff;font-size:1.5rem;font-family:'Sarabun',Arial,sans-serif;">
-  <div style="font-size:2rem;font-weight:bold;margin-bottom:24px;">WebAR Demo</div>
-  <div style="margin-bottom:16px;">กำลังโหลด...</div>
-  <div id="loading-bar-bg" style="width:220px;height:16px;background:#23262b;border-radius:8px;overflow:hidden;">
-    <div id="loading-bar" style="width:0%;height:100%;background:#00c896;transition:width 0.3s;"></div>
+    position:fixed;top:0;left:0;width:100vw;height:100vh;
+    background:#181c20;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:#fff;font-size:1.5rem;font-family:'Sarabun',Arial,sans-serif;">
+    <div style="font-size:2rem;font-weight:bold;margin-bottom:24px;">WebAR Demo</div>
+    <div style="margin-bottom:16px;">กำลังโหลด...</div>
+    <div id="loading-bar-bg" style="width:220px;height:16px;background:#23262b;border-radius:8px;overflow:hidden;">
+      <div id="loading-bar" style="width:0%;height:100%;background:#00c896;transition:width 0.3s;"></div>
+    </div>
   </div>
-</div>
   
   <!-- 🎥 วิดีโอแสดงภาพจากกล้อง -->
   <video id="video" autoplay muted playsinline></video>
@@ -125,10 +124,10 @@
   <!-- ⏩ ปุ่มเข้าโหมด AR -->
   <button id="ar-btn">👓 ดูโมเดลในโลกจริง (AR)</button>
 
-  <!-- ปุ่มสำหรับสแกน QR Code ใหม่ -->
-<button id="scan-again-btn">
-  สแกนใหม่
-</button>
+  <!-- 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ -->
+  <button id="scan-again-btn">
+    สแกนใหม่
+  </button>
 
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR -->
   <div id="info-box">
@@ -141,29 +140,28 @@
   <!-- ⚙️ โหลดสคริปต์หลัก (ใช้โมดูล JavaScript) -->
   <script type="module" src="./app.js"></script>
 
-
-    // ตัวอย่าง: เปลี่ยนข้อความ info-box (ให้ app.js เรียกใช้)
+  <script>
+    // 🟢 ฟังก์ชันเปลี่ยนข้อความ info-box (ให้ app.js เรียกใช้)
     window.setInfoBox = function(text) {
       document.getElementById('info-box').textContent = text;
     }
-  </script>
-  <script>
-  // Loading bar animation
-  let progress = 0;
-  const bar = document.getElementById('loading-bar');
-  const interval = setInterval(() => {
-    progress += Math.random() * 10 + 5; // เพิ่มทีละ 5-15%
-    if (progress > 100) progress = 100;
-    bar.style.width = progress + '%';
-    if (progress >= 100) clearInterval(interval);
-  }, 200);
 
-  // รออย่างน้อย 2200ms ก่อนซ่อน loading screen
-  window.addEventListener('load', () => {
-    setTimeout(() => {
-      document.getElementById('loading-screen').style.display = 'none';
-    }, 2200);
-  });
-</script>
+    // 🟢 Loading bar animation
+    let progress = 0;
+    const bar = document.getElementById('loading-bar');
+    const interval = setInterval(() => {
+      progress += Math.random() * 10 + 5; // เพิ่มทีละ 5-15%
+      if (progress > 100) progress = 100;
+      bar.style.width = progress + '%';
+      if (progress >= 100) clearInterval(interval);
+    }, 200);
+
+    // 🟢 รออย่างน้อย 2200ms ก่อนซ่อน loading screen
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+      }, 2200);
+    });
+  </script>
 </body>
 </html>
