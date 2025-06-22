@@ -59,17 +59,22 @@ function loadFromQR(qrUrl) {
       const infoContent = document.getElementById('info-content');
       if (infoContent) {
         infoContent.innerHTML = `
-          <h3>${data.name || ''}</h3>
-          <p>${data.description || ''}</p>
-          <p><b>ราคา:</b> ${data.price || ''}</p>
-          <p>${data.origin || ''}</p>
-          <p>${data.fruit_type || ''}</p>
-          <p>${data.price_per_kg || ''}</p>
-          <p>${data.harvest_date ? 'วันที่เก็บ: ' + data.harvest_date : ''}</p>
-          <p>${data.fertilizer ? 'ปุ๋ยที่ใช้: ' + data.fertilizer : ''}</p>
-          <p>${data.farm_name ? 'ชื่อสวน: ' + data.farm_name : ''}</p>
-          <p>${data.owner ? 'เจ้าของสวน: ' + data.owner : ''}</p>
-        `;
+    <h3>${data.name || ''}</h3>
+    <p>${data.description || ''}</p>
+    <p>${data.weight || ''}</p>
+    <p>${data.size || ''}</p>
+    <p>${data.nutritional_value || ''}</p>
+    <p>${data.shelf_life || ''}</p>
+    <p>${data.storage_conditions || ''}</p>
+    <p>${data.season || ''}</p>
+    <p>${data.origin || ''}</p>
+    <p>${data.fruit_type || ''}</p>
+    <p>${data.price_per_kg || ''}</p>
+    <p>${data.harvest_date || ''}</p>
+    <p>${data.fertilizer || ''}</p>
+    <p>${data.farm_name || ''}</p>
+    <p>${data.owner || ''}</p>
+  `;
       }
 
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
@@ -212,3 +217,75 @@ if (infoMessage) {
   // เรียกครั้งแรก
   window.addEventListener('DOMContentLoaded', updateScrollArrow);
 }
+
+// HTML Structure
+document.body.innerHTML = `
+  <video id="video" style="display:none;"></video>
+  <canvas id="canvas"></canvas>
+  <div id="info-message">
+    <div id="info-content">
+      สแกน QR Code เพื่อดูรายละเอียดโมเดล
+    </div>
+    <div id="scroll-arrow">▼</div>
+  </div>
+`;
+
+// CSS Styles
+const style = document.createElement('style');
+style.textContent = `
+  body {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  #video {
+    display: none;
+  }
+
+  #canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+  }
+
+  #info-message {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: rgba(30,32,36,0.95);
+    color: #fff;
+    padding: 18px 32px 18px 32px;
+    border-radius: 12px 12px 0 0;
+    font-size: 1.1rem;
+    max-width: 500px;
+    width: calc(100vw - 32px);
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
+    max-height: 35vh;
+    overflow-y: auto;
+    text-align: left;
+    font-family: 'Sarabun', Arial, sans-serif;
+    box-sizing: border-box;
+    margin: 0;
+    position: fixed;
+    /* เพิ่ม relative เพื่อให้ลูกศร absolute ได้ */
+    position: fixed;
+  }
+
+  #scroll-arrow {
+    position: absolute;
+    right: 18px;      /* ขยับจากขอบขวา */
+    bottom: 12px;     /* ขยับจากขอบล่าง */
+    font-size: 2rem;
+    color: #fff;
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: 30;
+    display: none;
+    transition: opacity 0.2s;
+  }
+`;
+document.head.appendChild(style);
