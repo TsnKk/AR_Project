@@ -98,9 +98,6 @@ function loadFromQR(qrUrl) {
         video.style.display = "none";
       }
 
-      // แสดงปุ่มสแกนใหม่ เฉพาะเมื่อมีโมเดล
-      if (scanAgainBtn) scanAgainBtn.style.display = "block";
-
       isScanning = false;
       codeReader.reset();
     })
@@ -108,7 +105,6 @@ function loadFromQR(qrUrl) {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-      if (scanAgainBtn) scanAgainBtn.style.display = "none";
       isScanning = false;
       codeReader.reset();
     });
@@ -198,53 +194,6 @@ codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
 // ✅ เปิดกล้องหลังเมื่อเข้าเว็บ
 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
   .then(stream => video.srcObject = stream);
-
-const scanAgainBtn = document.getElementById('scan-again-btn');
-
-// ซ่อนปุ่มสแกนใหม่ตอนเริ่มต้น
-if (scanAgainBtn) scanAgainBtn.style.display = "none";
-
-// ปุ่ม "สแกนใหม่" สำหรับรีเซ็ตและเริ่มสแกน QR ใหม่
-if (scanAgainBtn) {
-  scanAgainBtn.addEventListener('click', () => {
-    // ลบโมเดลเก่าออก
-    if (model) {
-      scene.remove(model);
-      model = null;
-    }
-    rotationY = 0;
-    autoRotate = true;
-    isDragging = false;
-
-    // รีเซ็ตข้อความ
-    const infoContent = document.getElementById('info-content');
-    if (infoContent) {
-      infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
-    }
-
-    // รีเซ็ต codeReader และ flag ก่อนเปิดกล้องใหม่
-    codeReader.reset();
-    isScanning = false;
-
-    // เปิดกล้องใหม่
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => {
-        video.srcObject = stream;
-        video.style.display = "block";
-        codeReader.decodeFromVideoDevice(null, 'video', (result, err) => {
-          if (result && !isScanning) {
-            isScanning = true;
-            const url = result.getText();
-            loadFromQR(url);
-            codeReader.reset();
-          }
-        });
-      });
-
-    // ซ่อนปุ่มหลังจากกด
-    scanAgainBtn.style.display = "none";
-  });
-}
 
 // แสดง/ซ่อนลูกศรเมื่อมีข้อมูลเกินกล่อง info-message
 const infoMessageEl = document.getElementById('info-message');
