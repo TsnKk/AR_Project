@@ -56,8 +56,9 @@ function loadFromQR(qrUrl) {
     .then(res => res.json())
     .then(data => {
       // 📄 แสดงข้อมูลสินค้า
-      if (infoBox) {
-        infoBox.innerHTML = `
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) {
+        infoContent.innerHTML = `
           <h3>${data.name}</h3>
           <p>${data.description}</p>
           <p><strong>ราคา:</strong> ${data.price}</p>
@@ -65,8 +66,6 @@ function loadFromQR(qrUrl) {
         `;
         infoBox.classList.add('has-data');
       }
-      // เมื่อแสดงข้อมูลโมเดล
-      infoBox.classList.add('has-data');
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
       if (model) {
         scene.remove(model);
@@ -90,8 +89,8 @@ function loadFromQR(qrUrl) {
     })
     .catch(err => {
       console.error('โหลด JSON ไม่สำเร็จ:', err);
-      if (infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
-      // เมื่อรีเซ็ตหรือไม่มีข้อมูล
+      const infoContent = document.getElementById('info-content');
+      if (infoContent) infoContent.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
       infoBox.classList.remove('has-data');
       isScanning = false;
       codeReader.reset();
@@ -188,8 +187,9 @@ let isScanning = false; // ป้องกันการสแกนซ้อ�
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
     // รีเซ็ตข้อมูลและสถานะ
-    if (infoBox) {
-      infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+    const infoContent = document.getElementById('info-content');
+    if (infoContent) {
+      infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
       infoBox.classList.remove('has-data');
     }
     renderer.setClearColor(0x000000, 0);
