@@ -18,16 +18,17 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(window.devicePixelRatio);
 
-// ✅ แสงพื้นฐาน
+// ✅ เพิ่มแสงสว่างให้กับซีน
 const light = new THREE.HemisphereLight(0xffffff, 0x444444);
 scene.add(light);
 
-let model = null; // เก็บโมเดลปัจจุบัน
+let model = null; // ตัวแปรเก็บโมเดล 3D ปัจจุบัน
 
-// ✅ โหลดและแสดงโมเดล 3D (.glb)
+// ✅ ฟังก์ชันโหลดและแสดงโมเดล 3D (.glb)
 function loadModel(url) {
   const loader = new GLTFLoader();
   loader.load(url, gltf => {
+    // ถ้ามีโมเดลเดิมอยู่ ให้ลบและเคลียร์หน่วยความจำ
     if (model) {
       scene.remove(model);
       model.traverse(child => {
@@ -38,14 +39,15 @@ function loadModel(url) {
       });
       model = null;
     }
+    // เพิ่มโมเดลใหม่เข้า scene
     model = gltf.scene;
     model.scale.set(1.0, 1.0, 1.0);
-    model.position.y = 0.5; // ขยับโมเดลขึ้น 10%
+    model.position.y = 0.5; // ขยับโมเดลขึ้นเล็กน้อย
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
 
-// ✅ โหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
+// ✅ ฟังก์ชันโหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
 function loadFromQR(qrUrl) {
   const url = new URL(qrUrl);
   const jsonUrl = url.searchParams.get("src") || qrUrl;
@@ -70,6 +72,7 @@ function loadFromQR(qrUrl) {
       }
       loadModel(data.model);
 
+      // ตั้งค่าสีพื้นหลัง
       renderer.setClearColor(0xffffff, 1);
       document.body.style.background = "#fff";
 
@@ -84,6 +87,7 @@ function loadFromQR(qrUrl) {
       codeReader.reset();
     })
     .catch(err => {
+      // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
       isScanning = false;
@@ -97,7 +101,7 @@ let previousX = 0;
 let rotationY = 0;
 let autoRotate = true;
 
-// --- Mouse Events สำหรับควบคุมการหมุนโมเดล ---
+// ✅ Mouse Events สำหรับควบคุมการหมุนโมเดลด้วยเมาส์
 renderer.domElement.addEventListener('mousedown', (e) => {
   isDragging = true;
   autoRotate = false;
@@ -118,7 +122,7 @@ renderer.domElement.addEventListener('mouseleave', () => {
   autoRotate = true;
 });
 
-// --- Touch Events สำหรับควบคุมการหมุนโมเดลบนมือถือ ---
+// ✅ Touch Events สำหรับควบคุมการหมุนโมเดลบนมือถือ
 renderer.domElement.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     isDragging = true;
@@ -137,7 +141,7 @@ renderer.domElement.addEventListener('touchend', () => {
   autoRotate = true;
 });
 
-// ✅ วนเรนเดอร์ทุกเฟรม
+// ✅ ฟังก์ชันวนเรนเดอร์ทุกเฟรม
 function animate() {
   requestAnimationFrame(animate);
 
@@ -162,12 +166,13 @@ window.addEventListener('resize', () => {
 
 // ✅ ตั้งค่า QR Code Scanner ด้วย ZXing
 const codeReader = new ZXing.BrowserMultiFormatReader();
+let isScanning = false;
 codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-  if (result) {
+  if (result && !isScanning) {
+    isScanning = true;
     const url = result.getText();
     console.log('QR Detected:', url);
     loadFromQR(url);
-    // codeReader.reset(); // เปิดใช้งานหากต้องการหยุดสแกนหลังพบ QR
   }
 });
 
