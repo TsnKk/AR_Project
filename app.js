@@ -88,11 +88,7 @@ function loadFromQR(qrUrl) {
       document.body.style.background = "#fff";
 
       // ปิดกล้องหลังสแกนเสร็จ
-      if (video && video.srcObject) {
-        const tracks = video.srcObject.getTracks();
-        tracks.forEach(track => track.stop());
-        video.srcObject = null;
-      }
+      stopCamera();
 
       isScanning = false;
       codeReader.reset();
@@ -101,6 +97,7 @@ function loadFromQR(qrUrl) {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoMessage) infoMessage.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      stopCamera();
       isScanning = false;
       codeReader.reset();
     });
@@ -178,44 +175,42 @@ window.addEventListener('resize', () => {
 // ✅ ตั้งค่า QR Code Scanner ด้วย ZXing
 const codeReader = new ZXing.BrowserMultiFormatReader();
 let isScanning = false;
-codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-  if (result && !isScanning) {
-    isScanning = true;
-    const url = result.getText();
-    console.log('QR Detected:', url);
-    loadFromQR(url);
-  }
-});
 
-// ✅ เปิดกล้องหลังเมื่อเข้าเว็บ
-navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-  .then(stream => video.srcObject = stream);
-
-// ✅ แสดง/ซ่อนลูกศรเลื่อนลงใน info-message
-function updateScrollArrow() {
-  const infoMessage = document.getElementById('info-message');
-  const scrollArrow = document.getElementById('scroll-arrow');
-  if (!infoMessage || !scrollArrow) return;
-  // ถ้า scroll ยังไม่สุดล่าง ให้โชว์ลูกศร
-  if (infoMessage.scrollHeight - infoMessage.scrollTop > infoMessage.clientHeight + 2) {
-    scrollArrow.style.display = 'block';
-  } else {
-    scrollArrow.style.display = 'none';
+// ฟังก์ชันเปิดกล้อง (แสดง video)
+function startCamera() {
+  const video = document.getElementById('video');
+  if (video) {
+    video.style.display = 'block';
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+      .then(stream => {
+        video.srcObject = stream;
+        codeReader.decodeFromVideoDevice(null, 'video', (result, err) => {
+          if (result && !isScanning) {
+            isScanning = true;
+            const url = result.getText();
+            loadFromQR(url);
+          }
+        });
+      })
+      .catch(err => {
+        console.error('ไม่สามารถเปิดกล้องได้:', err);
+      });
   }
 }
 
-// เรียกเมื่อโหลดข้อมูลใหม่
-if (infoMessage) {
-  infoMessage.addEventListener('scroll', updateScrollArrow);
-  // เรียกตอนโหลดข้อมูลใหม่ด้วย
-  const infoContent = document.getElementById('info-content');
-  const observer = new MutationObserver(() => setTimeout(updateScrollArrow, 50));
-  if (infoContent) {
-    observer.observe(infoContent, { childList: true, subtree: true });
+// ฟังก์ชันปิดกล้อง (ซ่อน video)
+function stopCamera() {
+  const video = document.getElementById('video');
+  if (video && video.srcObject) {
+    const tracks = video.srcObject.getTracks();
+    tracks.forEach(track => track.stop());
+    video.srcObject = null;
+    video.style.display = 'none';
   }
-  // เรียกครั้งแรก
-  window.addEventListener('DOMContentLoaded', updateScrollArrow);
 }
+
+// เรียก startCamera ตอนเริ่มต้นหรือเมื่อกดปุ่มสแกน
+startCamera();
 
 // HTML Structure
 document.body.innerHTML = `
