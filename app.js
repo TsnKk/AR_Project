@@ -55,19 +55,24 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์)
+      // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์ตาม mangosteen.json)
       if (infoMessage) {
         infoMessage.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
-          <p><strong>ราคา:</strong> ${data.price || ''}</p>
-          <p><strong>แหล่งที่มา:</strong> ${data.origin || ''}</p>
-          <p><strong>${data.fruit_type || ''}</strong></p>
-          <p><strong>${data.price_per_kg || ''}</strong></p>
-          <p><strong>${data.harvest_date ? 'วันที่เก็บ: ' + data.harvest_date : ''}</strong></p>
-          <p><strong>${data.fertilizer ? 'ปุ๋ยที่ใช้: ' + data.fertilizer : ''}</strong></p>
-          <p><strong>${data.farm_name ? 'ชื่อสวน: ' + data.farm_name : ''}</strong></p>
-          <p><strong>${data.owner ? 'เจ้าของสวน: ' + data.owner : ''}</strong></p>
+          <p>${data.weight || ''}</p>
+          <p>${data.size || ''}</p>
+          <p>${data.nutritional_value || ''}</p>
+          <p>${data.shelf_life || ''}</p>
+          <p>${data.storage_conditions || ''}</p>
+          <p>${data.season || ''}</p>
+          <p>${data.origin || ''}</p>
+          <p>${data.fruit_type || ''}</p>
+          <p>${data.price_per_kg || ''}</p>
+          <p>${data.harvest_date || ''}</p>
+          <p>${data.fertilizer || ''}</p>
+          <p>${data.farm_name || ''}</p>
+          <p>${data.owner || ''}</p>
         `;
       }
 
