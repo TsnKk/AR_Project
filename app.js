@@ -10,34 +10,33 @@ if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
     // รีเซ็ตข้อมูล
     if (infoBox) infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
-    renderer.setClearColor(0x000000, 0); // กลับเป็นโปร่งใสหรือสีเดิม
+    renderer.setClearColor(0x000000, 0);
     document.body.style.background = "#181c20";
     if (model) {
       scene.remove(model);
       model = null;
     }
-    // รีเซ็ตค่าการหมุน
     rotationY = 0;
     autoRotate = true;
     isDragging = false;
-    // รีเซ็ตกล้อง (ถ้ามีการเปลี่ยนแปลง)
     camera.position.set(0, 0, 5);
     camera.lookAt(0, 0, 0);
 
-    // เปิดกล้องใหม่ (ถ้ายังไม่ได้เปิด)
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-      .then(stream => {
-        video.srcObject = stream;
-        // เริ่มสแกน QR ใหม่
-        codeReader.reset();
-        codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-          if (result) {
-            const url = result.getText();
-            console.log('QR Detected:', url);
-            loadFromQR(url);
-          }
+    // Delay 1 วินาทีก่อนเปิดกล้องและเริ่มสแกนใหม่
+    setTimeout(() => {
+      navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+        .then(stream => {
+          video.srcObject = stream;
+          codeReader.reset();
+          codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+            if (result) {
+              const url = result.getText();
+              console.log('QR Detected:', url);
+              loadFromQR(url);
+            }
+          });
         });
-      });
+    }, 1000);
   });
 }
 
