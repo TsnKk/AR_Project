@@ -36,11 +36,11 @@
       max-height: 35vh; /* จำกัดความสูง */
       overflow-y: auto; /* เลื่อนขึ้น-ลงได้ */
       background: rgba(30, 32, 36, 0.98);
-      padding: 16px;
+      padding: 16px 0 0 0; /* เอา padding-top ออก เพื่อให้ปุ่มแนบ */
       font-family: 'Sarabun', Arial, sans-serif;
       box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.2);
       z-index: 10;
-      pointer-events: none;
+      pointer-events: auto; /* ให้ scroll และคลิกได้ */
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
       box-sizing: border-box;
@@ -49,6 +49,9 @@
       text-align: center;
       letter-spacing: 0.01em;
       scrollbar-width: thin;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
     }
     #info-box::-webkit-scrollbar {
       width: 8px;
@@ -111,9 +114,15 @@
       cursor: pointer;
       letter-spacing: 0.01em;
       transition: background 0.2s;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 12px 12px 0 0;
+      margin: 0 auto;
+      padding: 14px 0;
+      position: static; /* ไม่ fixed แล้ว */
     }
     #scan-again-btn:hover {
-      background: #23262b;
+      background: #00c896;
     }
   </style>
 </head>
@@ -139,14 +148,12 @@
   <!-- ⏩ ปุ่มเข้าโหมด AR -->
   <button id="ar-btn">👓 ดูโมเดลในโลกจริง (AR)</button>
 
-  <!-- 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ -->
-  <button id="scan-again-btn" style="z-index:21;">
-    สแกนใหม่
-  </button>
-
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR -->
   <div id="info-box">
-    สแกน QR Code เพื่อดูรายละเอียดโมเดล
+    <button id="scan-again-btn">สแกนใหม่</button>
+    <div id="info-content">
+      สแกน QR Code เพื่อดูรายละเอียดโมเดล
+    </div>
   </div>
 
   <!-- 🔍 โหลดไลบรารี ZXing สำหรับสแกน QR Code -->
