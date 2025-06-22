@@ -8,15 +8,23 @@ const infoBox = document.getElementById('info-box');  // กล่องแส�
 const scanAgainBtn = document.getElementById('scan-again-btn');
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
-    // ล้างข้อมูล
-    if (infoBox) infoBox.innerHTML = '';
+    // รีเซ็ตข้อมูลทุกอย่างให้เหมือนตอนเข้าเว็บใหม่
+    if (infoBox) infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
     renderer.setClearColor(0x000000, 0); // กลับเป็นโปร่งใสหรือสีเดิม
-    document.body.style.background = "#000";
+    document.body.style.background = "#181c20";
     if (model) {
       scene.remove(model);
       model = null;
     }
-    codeReader.reset(); // เริ่มสแกน QR ใหม่
+    // รีเซ็ตค่าการหมุน
+    rotationY = 0;
+    autoRotate = true;
+    isDragging = false;
+    // รีเซ็ตกล้อง (ถ้ามีการเปลี่ยนแปลง)
+    camera.position.set(0, 0, 5);
+    camera.lookAt(0, 0, 0);
+    // รีเซ็ตการสแกน QR
+    codeReader.reset();
   });
 }
 
