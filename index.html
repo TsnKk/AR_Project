@@ -65,7 +65,7 @@
       z-index: 20;
       background: rgba(30,32,36,0.95);
       color: #fff;
-      padding: 18px 32px 32px 32px; /* เผื่อพื้นที่ลูกศร */
+      padding: 18px 32px;
       border-radius: 12px 12px 0 0;
       font-size: 1.1rem;
       max-width: 500px;
@@ -77,21 +77,13 @@
       font-family: 'Sarabun', Arial, sans-serif;
       box-sizing: border-box;
       margin: 0;
-      /* relative เพื่อให้ลูกศร absolute ได้ */
-      position: fixed;
     }
-    #scroll-arrow {
-      position: absolute;
-      left: 50%;
-      bottom: 8px;
-      transform: translateX(-50%);
-      font-size: 2rem;
-      color: #fff;
-      opacity: 0.7;
-      pointer-events: none;
-      z-index: 30;
-      display: none;
-      transition: opacity 0.2s;
+    #info-message::-webkit-scrollbar {
+      width: 8px;
+    }
+    #info-message::-webkit-scrollbar-thumb {
+      background: #23262b;
+      border-radius: 8px;
     }
     #scan-again-btn {
       width: 100%;
@@ -174,10 +166,7 @@
 
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message">
-    <div id="info-content">
-      สแกน QR Code เพื่อดูรายละเอียดโมเดล
-    </div>
-    <div id="scroll-arrow">▼</div>
+    สแกน QR Code เพื่อดูรายละเอียดโมเดล
   </div>
 
   <!-- 🔍 โหลดไลบรารี ZXing สำหรับสแกน QR Code -->
