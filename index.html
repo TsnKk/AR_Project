@@ -110,6 +110,26 @@
     #ar-btn:hover {
       background: #009e74;
     }
+    /* ❓ ปุ่มช่วยเหลือ */
+    #floating-help-btn {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 30;
+      background: #23262b;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 56px;
+      height: 56px;
+      font-size: 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #floating-help-btn:hover {
+      background: #00c896;
+    }
     @media (max-width: 600px) {
       #info-box {
         font-size: 1rem;
@@ -145,6 +165,9 @@
 
   <!-- ⏩ ปุ่มเข้าโหมด AR -->
   <button id="ar-btn">👓 ดูโมเดลในโลกจริง (AR)</button>
+
+  <!-- ❓ ปุ่มช่วยเหลือ -->
+  <button id="floating-help-btn" title="ช่วยเหลือ">❓</button>
 
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message">
@@ -182,6 +205,10 @@
         document.getElementById('loading-screen').style.display = 'none';
       }, 2200);
     });
+
+    document.getElementById('floating-help-btn').onclick = function() {
+      alert('นี่คือปุ่มช่วยเหลือ!');
+    };
   </script>
 </body>
 </html>

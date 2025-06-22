@@ -110,52 +110,6 @@ function loadFromQR(qrUrl) {
     });
 }
 
-// ฟังก์ชันสร้างปุ่ม "สแกนใหม่" และเพิ่มเข้า infoMessage (ถ้ายังไม่มี)
-function createScanAgainButton() {
-  let scanAgainBtn = document.getElementById('scan-again-btn');
-  if (!scanAgainBtn) {
-    scanAgainBtn = document.createElement('button');
-    scanAgainBtn.id = 'scan-again-btn';
-    scanAgainBtn.textContent = 'สแกนใหม่';
-    scanAgainBtn.style.position = 'absolute';
-    scanAgainBtn.style.top = '10px';
-    scanAgainBtn.style.right = '10px';
-    scanAgainBtn.style.padding = '10px 20px';
-    scanAgainBtn.style.fontSize = '16px';
-    scanAgainBtn.style.color = '#fff';
-    scanAgainBtn.style.backgroundColor = '#007bff';
-    scanAgainBtn.style.border = 'none';
-    scanAgainBtn.style.borderRadius = '5px';
-    scanAgainBtn.style.cursor = 'pointer';
-    scanAgainBtn.style.zIndex = '1000';
-
-    // เพิ่ม event listener สำหรับปุ่ม "สแกนใหม่"
-    scanAgainBtn.addEventListener('click', () => {
-      // เริ่มสแกน QR Code ใหม่
-      isScanning = true;
-      infoMessage.innerHTML = ''; // ลบข้อมูลเดิม
-      createScanAgainButton(); // สร้างปุ่มใหม่
-      codeReader.reset();
-      codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-        if (result && isScanning) {
-          isScanning = true;
-          const url = result.getText();
-          console.log('QR Detected:', url);
-          loadFromQR(url);
-        }
-      });
-    });
-
-    const infoMessage = document.getElementById('info-message');
-    if (infoMessage) {
-      infoMessage.insertBefore(scanAgainBtn, infoMessage.firstChild);
-    }
-  }
-  return scanAgainBtn;
-}
-
-const scanAgainBtn = createScanAgainButton(); // เรียกฟังก์ชันสร้างปุ่มเมื่อเริ่มต้น
-
 // ✅ ตัวแปรควบคุมการหมุนและลากโมเดล
 let isDragging = false;
 let previousX = 0;
