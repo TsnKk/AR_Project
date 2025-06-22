@@ -55,24 +55,24 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // แสดงข้อมูลสินค้าใน info-message (แสดงทุกฟิลด์ตาม mangosteen.json)
+      // แสดงข้อมูลสินค้าใน info-message (คุมดำเฉพาะหัวข้อ)
       if (infoMessage) {
         infoMessage.innerHTML = `
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
-          <p>${data.weight || ''}</p>
-          <p>${data.size || ''}</p>
-          <p>${data.nutritional_value || ''}</p>
-          <p>${data.shelf_life || ''}</p>
-          <p>${data.storage_conditions || ''}</p>
-          <p>${data.season || ''}</p>
-          <p>${data.origin || ''}</p>
-          <p>${data.fruit_type || ''}</p>
-          <p>${data.price_per_kg || ''}</p>
-          <p>${data.harvest_date || ''}</p>
-          <p>${data.fertilizer || ''}</p>
-          <p>${data.farm_name || ''}</p>
-          <p>${data.owner || ''}</p>
+          <p><b>${data.weight ? 'น้ำหนัก:' : ''}</b> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/,'') : ''}</p>
+          <p><b>${data.size ? 'ขนาด:' : ''}</b> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/,'') : ''}</p>
+          <p><b>${data.nutritional_value ? 'คุณค่าทางโภชนาการ:' : ''}</b> ${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/,'') : ''}</p>
+          <p><b>${data.shelf_life ? 'อายุการเก็บรักษา:' : ''}</b> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/,'') : ''}</p>
+          <p><b>${data.storage_conditions ? 'วิธีเก็บรักษา:' : ''}</b> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/,'') : ''}</p>
+          <p><b>${data.season ? 'ฤดูกาลเก็บเกี่ยว:' : ''}</b> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/,'') : ''}</p>
+          <p><b>${data.origin ? 'ตำแหน่งสวน:' : ''}</b> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/,'') : ''}</p>
+          <p><b>${data.fruit_type ? 'ชนิดผลไม้:' : ''}</b> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/,'') : ''}</p>
+          <p><b>${data.price_per_kg ? 'ราคาต่อกิโล:' : ''}</b> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/,'') : ''}</p>
+          <p><b>${data.harvest_date ? 'วันที่เก็บ:' : ''}</b> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/,'') : ''}</p>
+          <p><b>${data.fertilizer ? 'ปุ๋ยที่ใช้:' : ''}</b> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/,'') : ''}</p>
+          <p><b>${data.farm_name ? 'ชื่อสวน:' : ''}</b> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/,'') : ''}</p>
+          <p><b>${data.owner ? 'เจ้าของสวน:' : ''}</b> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/,'') : ''}</p>
         `;
       }
 
