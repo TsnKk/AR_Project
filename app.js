@@ -63,7 +63,10 @@ function loadFromQR(qrUrl) {
           <p><strong>ราคา:</strong> ${data.price}</p>
           <p><strong>แหล่งที่มา:</strong> ${data.origin}</p>
         `;
+        infoBox.classList.add('has-data');
       }
+      // เมื่อแสดงข้อมูลโมเดล
+      infoBox.classList.add('has-data');
       // ลบโมเดลเดิมก่อนโหลดใหม่ (ป้องกันซ้อน)
       if (model) {
         scene.remove(model);
@@ -88,6 +91,8 @@ function loadFromQR(qrUrl) {
     .catch(err => {
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       if (infoBox) infoBox.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      // เมื่อรีเซ็ตหรือไม่มีข้อมูล
+      infoBox.classList.remove('has-data');
       isScanning = false;
       codeReader.reset();
     });
@@ -146,7 +151,7 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.1;
+      rotationY += 0.05; // ปรับความเร็วการหมุนที่นี่
     }
     model.rotation.y = rotationY;
   }
@@ -183,7 +188,10 @@ let isScanning = false; // ป้องกันการสแกนซ้อ�
 if (scanAgainBtn) {
   scanAgainBtn.addEventListener('click', () => {
     // รีเซ็ตข้อมูลและสถานะ
-    if (infoBox) infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+    if (infoBox) {
+      infoBox.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+      infoBox.classList.remove('has-data');
+    }
     renderer.setClearColor(0x000000, 0);
     document.body.style.background = "#181c20";
     if (model) {

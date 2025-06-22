@@ -33,6 +33,8 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 500px;
+      max-height: 35vh; /* จำกัดความสูง */
+      overflow-y: auto; /* เลื่อนขึ้น-ลงได้ */
       background: rgba(30, 32, 36, 0.98);
       padding: 16px;
       font-family: 'Sarabun', Arial, sans-serif;
@@ -46,12 +48,25 @@
       font-size: 1.1rem;
       text-align: center;
       letter-spacing: 0.01em;
+      scrollbar-width: thin;
+    }
+    #info-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    #info-box::-webkit-scrollbar-thumb {
+      background: #23262b;
+      border-radius: 8px;
     }
     @media (max-width: 600px) {
       #info-box {
         font-size: 1rem;
         padding: 10px;
       }
+    }
+    #info-box.has-data {
+      text-align: left;
+      padding-left: 24px;
+      padding-right: 24px;
     }
 
     /* ⏩ ปุ่มเข้าโหมด AR */
@@ -80,10 +95,10 @@
     /* 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ */
     #scan-again-btn {
       position: fixed;
-      bottom: 20vh; /* ขยับปุ่มขึ้นสูงขึ้น 20% ของความสูงหน้าจอ */
       left: 50%;
       transform: translateX(-50%);
-      z-index: 20;
+      bottom: 110px; /* อยู่เหนือ info-box เสมอ */
+      z-index: 21; /* มากกว่า info-box */
       background: rgba(30, 32, 36, 0.98);
       color: #fff;
       border: none;
@@ -125,7 +140,7 @@
   <button id="ar-btn">👓 ดูโมเดลในโลกจริง (AR)</button>
 
   <!-- 🔄 ปุ่มสำหรับสแกน QR Code ใหม่ -->
-  <button id="scan-again-btn">
+  <button id="scan-again-btn" style="z-index:21;">
     สแกนใหม่
   </button>
 
