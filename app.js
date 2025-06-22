@@ -57,37 +57,31 @@ function loadFromQR(qrUrl) {
     .then(data => {
       if (infoMessage) {
         infoMessage.innerHTML = `
-          <div style="font-size:1.3rem;margin-bottom:8px;">🥭 ข้อมูลสินค้า: <b>${data.name || ''}</b></div>
-          <div style="margin-bottom:8px;">
-            <b>รายละเอียด:</b><br>
-            ${data.description || ''}
-          </div>
-          <div style="margin-bottom:8px;">
-            <b>ชนิดผลไม้:</b> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/,'') : ''}
-          </div>
-          <div style="margin-bottom:8px;">
-            <b>ขนาด:</b> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/,'') : ''}
-          </div>
-          <div style="margin-bottom:8px;">
-            <b>น้ำหนัก:</b> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/,'') : ''}
-          </div>
-          <div style="margin-bottom:8px;">
-            <b>ราคาต่อกิโล:</b> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/,'') : ''}
-          </div>
-          <div style="margin-bottom:8px;">
-            <b>วันที่เก็บ:</b> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/,'') : ''}
-          </div>
-          <div style="font-size:1.15rem;margin:16px 0 4px 0;">🌾 ข้อมูลสวน</div>
-          <div><b>ชื่อสวน:</b> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/,'') : ''}</div>
-          <div><b>เจ้าของสวน:</b> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/,'') : ''}</div>
-          <div><b>ตำแหน่งสวน:</b> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/,'') : ''}</div>
-          <div><b>ฤดูกาลเก็บเกี่ยว:</b> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/,'') : ''}</div>
-          <div><b>ปุ๋ยที่ใช้:</b> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/,'') : ''}</div>
-          <div style="font-size:1.15rem;margin:16px 0 4px 0;">🧊 การเก็บรักษา</div>
-          <div><b>อายุการเก็บรักษา:</b> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/,'') : ''}</div>
-          <div><b>วิธีเก็บรักษา:</b> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/,'') : ''}</div>
-          <div style="font-size:1.15rem;margin:16px 0 4px 0;">🍊 คุณค่าทางโภชนาการ</div>
-          <div>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/,'') : ''}</div>
+          <h3>${data.name || ''}</h3>
+          <p>${data.description || ''}</p>
+
+          <strong>ข้อมูลสินค้า</strong><br>
+          <p><strong>ชนิดผลไม้:</strong> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/,'') : ''}</p>
+          <p><strong>ขนาด:</strong> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/,'') : ''}</p>
+          <p><strong>น้ำหนัก:</strong> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/,'') : ''}</p>
+          <p><strong>วันที่เก็บ:</strong> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/,'') : ''}</p>
+
+          <strong>ข้อมูลสวน</strong><br>
+          <p><strong>ชื่อสวน:</strong> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/,'') : ''}</p>
+          <p><strong>เจ้าของสวน:</strong> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/,'') : ''}</p>
+          <p><strong>ตำแหน่งสวน:</strong> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/,'') : ''}</p>
+          <p><strong>ฤดูกาลเก็บเกี่ยว:</strong> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/,'') : ''}</p>
+          <p><strong>ปุ๋ยที่ใช้:</strong> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/,'') : ''}</p>
+
+          <strong>การเก็บรักษา</strong><br>
+          <p><strong>อายุการเก็บรักษา:</strong> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/,'') : ''}</p>
+          <p><strong>วิธีเก็บรักษา:</strong> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/,'') : ''}</p>
+
+          <strong>คุณค่าทางโภชนาการ</strong><br>
+          <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/,'') : ''}</p>
+
+          <strong>ราคา</strong><br>
+          <p><strong>ราคาต่อกิโลกรัม:</strong> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/,'') : ''}</p>
         `;
       }
 
