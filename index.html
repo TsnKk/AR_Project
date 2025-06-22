@@ -100,6 +100,7 @@
       z-index: 11;
       position: relative;
       transition: background 0.2s;
+      display: none;
     }
     #scan-again-btn:hover,
     #scan-again-btn:active,
@@ -166,6 +167,7 @@
 
   <!-- 🧾 กล่องแสดงข้อมูลโมเดลหลังสแกน QR (อยู่ด้านล่างและแสดงข้อความทั้งหมด) -->
   <div id="info-message">
+    <button id="scan-again-btn" style="width:100%;border-radius:12px 12px 0 0;display:none;">สแกนใหม่</button>
     <div id="info-content">
       สแกน QR Code เพื่อดูรายละเอียดโมเดล
     </div>
