@@ -11,6 +11,7 @@
       padding: 0;
       height: 100%;
       overflow: hidden;
+      background: #181c20;
     }
 
     /* 🎥 จัดตำแหน่งกล้องและ Canvas ให้เต็มจอ */
@@ -64,7 +65,7 @@
       z-index: 20;
       background: rgba(30,32,36,0.95);
       color: #fff;
-      padding: 18px 32px 18px 32px;
+      padding: 18px 32px 32px 32px; /* เผื่อพื้นที่ลูกศร */
       border-radius: 12px 12px 0 0;
       font-size: 1.1rem;
       max-width: 500px;
@@ -76,6 +77,8 @@
       font-family: 'Sarabun', Arial, sans-serif;
       box-sizing: border-box;
       margin: 0;
+      /* relative เพื่อให้ลูกศร absolute ได้ */
+      position: fixed;
     }
     #scroll-arrow {
       position: absolute;
