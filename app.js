@@ -144,7 +144,6 @@ renderer.domElement.addEventListener('touchmove', (e) => {
   const deltaX = e.touches[0].clientX - previousX;
   previousX = e.touches[0].clientX;
   rotationY += deltaX * 0.01;
-  rotationX += deltaY * 0.01;
 });
 renderer.domElement.addEventListener('touchend', () => {
   isDragging = false;
