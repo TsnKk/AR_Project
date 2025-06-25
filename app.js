@@ -318,7 +318,7 @@ style.textContent = `
     z-index: 10000;
   }
   #my-new-btn:hover, #my-new-btn:active {
-    background: #2196f3; /* สีฟ้าเมื่อ hover หรือ กด */
+    background: #2196f3;
   }
   #info-message {
     z-index: 9999 !important;
