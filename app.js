@@ -55,10 +55,25 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // ✅ แก้ไข: เซ็ตเฉพาะ info-content ไม่ทับ scroll-arrow
+      // ✅ เซ็ตเฉพาะ info-content ไม่ทับ scroll-arrow
       const infoContent = document.getElementById('info-content');
       if (infoContent) {
         infoContent.innerHTML = `
+          <button id="restart-scan-btn" style="
+            display:block;
+            width:100%;
+            margin-bottom:16px;
+            background:#23262b;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            padding:12px 0;
+            font-size:1.05rem;
+            font-weight:bold;
+            font-family:'Sarabun',Arial,sans-serif;
+            cursor:pointer;
+            transition:background 0.2s;
+          ">🔄 เริ่มสแกนใหม่</button>
           <h3>${data.name || ''}</h3>
           <p>${data.description || ''}</p>
           <strong>ข้อมูลสินค้า</strong><br>
@@ -79,6 +94,23 @@ function loadFromQR(qrUrl) {
           <strong>คุณค่าทางโภชนาการ</strong><br>
           <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/, '') : ''}</p>
         `;
+        // เพิ่ม event ให้ปุ่ม "เริ่มสแกนใหม่"
+        const restartBtn = document.getElementById('restart-scan-btn');
+        if (restartBtn) {
+          restartBtn.addEventListener('click', () => {
+            infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            isScanning = false;
+            codeReader.reset();
+            codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+              if (result && !isScanning) {
+                isScanning = true;
+                const url = result.getText();
+                console.log('QR Detected:', url);
+                loadFromQR(url);
+              }
+            });
+          });
+        }
       }
 
       // ✅ ไม่ต้อง remove model ที่นี่ เพราะ loadModel จะจัดการเอง
@@ -88,9 +120,6 @@ function loadFromQR(qrUrl) {
       renderer.setClearColor(0xffffff, 1);
       document.body.style.background = "#fff";
 
-      // ✅ ไม่ควรปิดกล้องที่นี่ ถ้าต้องการสแกนซ้ำ
-      // ถ้าต้องการปิดกล้องจริง ๆ ให้เพิ่มปุ่ม "สแกนใหม่" แล้วค่อยเปิดกล้องใหม่
-
       isScanning = false;
       codeReader.reset();
     })
@@ -98,7 +127,43 @@ function loadFromQR(qrUrl) {
       // กรณีโหลด JSON ไม่สำเร็จ
       console.error('โหลด JSON ไม่สำเร็จ:', err);
       const infoContent = document.getElementById('info-content');
-      if (infoContent) infoContent.innerHTML = 'ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้';
+      if (infoContent) {
+        infoContent.innerHTML = `
+          <button id="restart-scan-btn" style="
+            display:block;
+            width:100%;
+            margin-bottom:16px;
+            background:#23262b;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            padding:12px 0;
+            font-size:1.05rem;
+            font-weight:bold;
+            font-family:'Sarabun',Arial,sans-serif;
+            cursor:pointer;
+            transition:background 0.2s;
+          ">🔄 เริ่มสแกนใหม่</button>
+          ไม่สามารถโหลดข้อมูลจาก QR Code นี้ได้
+        `;
+        // เพิ่ม event ให้ปุ่ม "เริ่มสแกนใหม่"
+        const restartBtn = document.getElementById('restart-scan-btn');
+        if (restartBtn) {
+          restartBtn.addEventListener('click', () => {
+            infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            isScanning = false;
+            codeReader.reset();
+            codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+              if (result && !isScanning) {
+                isScanning = true;
+                const url = result.getText();
+                console.log('QR Detected:', url);
+                loadFromQR(url);
+              }
+            });
+          });
+        }
+      }
       isScanning = false;
       codeReader.reset();
     });
@@ -107,7 +172,9 @@ function loadFromQR(qrUrl) {
 // ✅ ตัวแปรควบคุมการหมุนและลากโมเดล
 let isDragging = false;
 let previousX = 0;
+let previousY = 0;
 let rotationY = 0;
+let positionY = 1; // ค่าเริ่มต้นของตำแหน่งแกน Y (เหมือน model.position.y)
 let autoRotate = true;
 
 // ✅ Mouse Events สำหรับควบคุมการหมุนโมเดลด้วยเมาส์
@@ -115,12 +182,18 @@ renderer.domElement.addEventListener('mousedown', (e) => {
   isDragging = true;
   autoRotate = false;
   previousX = e.clientX;
+  previousY = e.clientY;
 });
 renderer.domElement.addEventListener('mousemove', (e) => {
   if (!isDragging) return;
   const deltaX = e.clientX - previousX;
+  const deltaY = e.clientY - previousY;
   previousX = e.clientX;
-  rotationY += deltaX * 0.01;
+  previousY = e.clientY;
+  rotationY += deltaX * 0.01; // หมุน
+  positionY += -deltaY * 0.01; // ขยับขึ้น-ลง (กลับด้านให้ลากขึ้น = ขยับขึ้น)
+  if (positionY < 0.2) positionY = 0.2; // จำกัดไม่ให้ต่ำเกิน
+  if (positionY > 3) positionY = 3;     // จำกัดไม่ให้สูงเกิน
 });
 renderer.domElement.addEventListener('mouseup', () => {
   isDragging = false;
@@ -137,13 +210,19 @@ renderer.domElement.addEventListener('touchstart', (e) => {
     isDragging = true;
     autoRotate = false;
     previousX = e.touches[0].clientX;
+    previousY = e.touches[0].clientY;
   }
 });
 renderer.domElement.addEventListener('touchmove', (e) => {
   if (!isDragging || e.touches.length !== 1) return;
   const deltaX = e.touches[0].clientX - previousX;
+  const deltaY = e.touches[0].clientY - previousY;
   previousX = e.touches[0].clientX;
+  previousY = e.touches[0].clientY;
   rotationY += deltaX * 0.01;
+  positionY += -deltaY * 0.01;
+  if (positionY < 0.2) positionY = 0.2;
+  if (positionY > 3) positionY = 3;
 });
 renderer.domElement.addEventListener('touchend', () => {
   isDragging = false;
@@ -157,9 +236,10 @@ function animate() {
   if (model) {
     // หมุนอัตโนมัติถ้าไม่ได้ลาก
     if (!isDragging && autoRotate) {
-      rotationY += 0.02; // ปรับความเร็วการหมุนที่นี่
+      rotationY += 0.02;
     }
     model.rotation.y = rotationY;
+    model.position.y = positionY;
   }
 
   renderer.render(scene, camera);
