@@ -215,3 +215,41 @@ if (infoMessageEl && scrollArrow) {
   window.addEventListener('resize', updateScrollArrow);
   setTimeout(updateScrollArrow, 500);
 }
+
+// CSS สำหรับปุ่มใหม่ (คุมธีมเดียวกับปุ่ม AR)
+const style = document.createElement('style');
+style.textContent = `
+  #my-new-btn {
+    position: fixed;
+    bottom: 140px; /* อยู่เหนือปุ่ม AR */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    background: #00c896;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 14px 32px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: background 0.2s;
+    font-family: 'Sarabun', Arial, sans-serif;
+  }
+  #my-new-btn:hover {
+    background: #009e74;
+  }
+`;
+document.head.append(style);
+
+// สร้างปุ่มใหม่
+const myNewButton = document.createElement('button');
+myNewButton.id = 'my-new-btn';
+myNewButton.textContent = 'ปุ่มใหม่';
+document.body.append(myNewButton);
+
+// เพิ่มฟังก์ชันการทำงานให้ปุ่มใหม่ (ตัวอย่างเช่น แสดงข้อความ)
+myNewButton.addEventListener('click', () => {
+  alert('คุณคลิกปุ่มใหม่!');
+});
