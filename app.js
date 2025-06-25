@@ -174,10 +174,10 @@ let isDragging = false;
 let previousX = 0;
 let previousY = 0;
 let rotationY = 0;
-let positionY = 1; // ค่าเริ่มต้นของตำแหน่งแกน Y (เหมือน model.position.y)
+let rotationX = 0; // เพิ่มตัวแปรสำหรับหมุนแกน X
 let autoRotate = true;
 
-// ✅ Mouse Events สำหรับควบคุมการหมุนโมเดลด้วยเมาส์
+// Mouse Events
 renderer.domElement.addEventListener('mousedown', (e) => {
   isDragging = true;
   autoRotate = false;
@@ -190,10 +190,11 @@ renderer.domElement.addEventListener('mousemove', (e) => {
   const deltaY = e.clientY - previousY;
   previousX = e.clientX;
   previousY = e.clientY;
-  rotationY += deltaX * 0.01; // หมุน
-  positionY += -deltaY * 0.01; // ขยับขึ้น-ลง (กลับด้านให้ลากขึ้น = ขยับขึ้น)
-  if (positionY < 0.2) positionY = 0.2; // จำกัดไม่ให้ต่ำเกิน
-  if (positionY > 3) positionY = 3;     // จำกัดไม่ให้สูงเกิน
+  rotationY += deltaX * 0.01; // หมุนซ้าย-ขวา
+  rotationX += deltaY * 0.01; // หมุนก้ม-เงย
+  // จำกัดมุมก้ม-เงย ไม่ให้หมุนเกิน 90 องศา
+  if (rotationX < -Math.PI / 2) rotationX = -Math.PI / 2;
+  if (rotationX > Math.PI / 2) rotationX = Math.PI / 2;
 });
 renderer.domElement.addEventListener('mouseup', () => {
   isDragging = false;
@@ -204,7 +205,7 @@ renderer.domElement.addEventListener('mouseleave', () => {
   autoRotate = true;
 });
 
-// ✅ Touch Events สำหรับควบคุมการหมุนโมเดลบนมือถือ
+// Touch Events
 renderer.domElement.addEventListener('touchstart', (e) => {
   if (e.touches.length === 1) {
     isDragging = true;
@@ -220,9 +221,9 @@ renderer.domElement.addEventListener('touchmove', (e) => {
   previousX = e.touches[0].clientX;
   previousY = e.touches[0].clientY;
   rotationY += deltaX * 0.01;
-  positionY += -deltaY * 0.01;
-  if (positionY < 0.2) positionY = 0.2;
-  if (positionY > 3) positionY = 3;
+  rotationX += deltaY * 0.01;
+  if (rotationX < -Math.PI / 2) rotationX = -Math.PI / 2;
+  if (rotationX > Math.PI / 2) rotationX = Math.PI / 2;
 });
 renderer.domElement.addEventListener('touchend', () => {
   isDragging = false;
@@ -239,7 +240,7 @@ function animate() {
       rotationY += 0.02;
     }
     model.rotation.y = rotationY;
-    model.position.y = positionY;
+    model.rotation.x = rotationX; // หมุนก้ม-เงย
   }
 
   renderer.render(scene, camera);
