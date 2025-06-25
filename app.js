@@ -432,13 +432,8 @@ document.head.appendChild(style);
 
 // เพิ่มปุ่ม toggle ปิด/เปิด info-message
 const infoMessageBox = document.getElementById('info-message');
-if (infoMessageBox && !document.getElementById('info-toggle-btn')) {
-  const toggleBtn = document.createElement('button');
-  toggleBtn.id = 'info-toggle-btn';
-  toggleBtn.innerHTML = '▼'; // ลูกศรลง
-  toggleBtn.title = 'ซ่อนแถบข้อมูล';
-  infoMessageBox.appendChild(toggleBtn);
-
+const toggleBtn = document.getElementById('info-toggle-btn');
+if (infoMessageBox && toggleBtn) {
   toggleBtn.addEventListener('click', () => {
     if (infoMessageBox.classList.contains('closed')) {
       infoMessageBox.classList.remove('closed');
