@@ -329,8 +329,10 @@ myNewButton.textContent = 'ปุ่มใหม่';
 // ใส่ปุ่มไว้บนสุดใน info-message
 const infoMessageBox = document.getElementById('info-message');
 if (infoMessageBox) {
+  infoMessageBox.style.zIndex = "9999";
   infoMessageBox.insertBefore(myNewButton, infoMessageBox.firstChild);
 }
+myNewButton.style.zIndex = "10000";
 
 // ให้ปุ่มใหม่แสดง/ซ่อนพร้อมปุ่ม AR
 const arBtn = document.getElementById('ar-btn');
@@ -350,3 +352,19 @@ window.addEventListener('resize', arBtnDisplayCheck);
 myNewButton.addEventListener('click', () => {
   alert('คุณคลิกปุ่มใหม่!');
 });
+
+/* เพิ่ม z-index ให้ info-message และปุ่มใหม่ */
+#info-message {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  max-height: 35vh;
+  background: #23262b;
+
+
+  z-index: 9999; /* เพิ่มบรรทัดนี้ */  color: #fff;  /* ...อื่นๆ... */
+}
+#my-new-btn {
+  z-index: 10000; /* เพิ่มบรรทัดนี้ */
+}
