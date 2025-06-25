@@ -297,7 +297,7 @@ if (infoMessageEl && scrollArrow) {
   setTimeout(updateScrollArrow, 500);
 }
 
-// เพิ่ม CSS ด้วย JavaScript (ถูกต้อง)
+// เพิ่ม CSS ด้วย JavaScript (สีปุ่มใหม่และสีตอนกด)
 const style = document.createElement('style');
 style.textContent = `
   #my-new-btn {
@@ -314,11 +314,11 @@ style.textContent = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     transition: background 0.2s;
     font-family: 'Sarabun', Arial, sans-serif;
-    display: none;
+    display: block;
     z-index: 10000;
   }
-  #my-new-btn:hover {
-    background: #009e74;
+  #my-new-btn:hover, #my-new-btn:active {
+    background: #2196f3; /* สีฟ้าเมื่อ hover หรือ กด */
   }
   #info-message {
     z-index: 9999 !important;
@@ -329,7 +329,7 @@ document.head.append(style);
 // สร้างปุ่มใหม่
 const myNewButton = document.createElement('button');
 myNewButton.id = 'my-new-btn';
-myNewButton.textContent = 'ปุ่มใหม่';
+myNewButton.textContent = 'สแกนใหม่';
 
 // ใส่ปุ่มไว้บนสุดใน info-message
 const infoMessageBox = document.getElementById('info-message');
@@ -339,21 +339,38 @@ if (infoMessageBox) {
 }
 myNewButton.style.zIndex = "10000";
 
-// ให้ปุ่มใหม่แสดง/ซ่อนพร้อมปุ่ม AR
-const arBtn = document.getElementById('ar-btn');
-const showMyNewBtn = (show) => {
-  myNewButton.style.display = show ? 'block' : 'none';
-};
-const observerAR = new MutationObserver(() => {
-  showMyNewBtn(arBtn.style.display !== 'none');
-});
-observerAR.observe(arBtn, { attributes: true, attributeFilter: ['style'] });
-// กรณีมีการเปลี่ยน display ด้วย class
-const arBtnDisplayCheck = () => showMyNewBtn(window.getComputedStyle(arBtn).display !== 'none');
-arBtnDisplayCheck();
-window.addEventListener('resize', arBtnDisplayCheck);
+// ฟังก์ชันรีเซ็ตหน้าเว็บให้เหมือนตอนเข้าใหม่
+function resetToInitialState() {
+  // 1. ลบโมเดลออกจาก scene
+  if (model) {
+    scene.remove(model);
+    model.traverse(child => {
+      if (child.isMesh) {
+        child.geometry.dispose();
+        child.material.dispose();
+      }
+    });
+    model = null;
+  }
+  // 2. รีเซ็ตข้อความ info-message
+  const infoContent = document.getElementById('info-content');
+  if (infoContent) {
+    infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+  }
+  // 3. รีเซ็ตพื้นหลัง
+  renderer.setClearColor(0x181c20, 1);
+  document.body.style.background = "#181c20";
+  // 4. รีเซ็ตตัวแปรควบคุมโมเดล
+  rotationY = 0;
+  rotationX = 0;
+  // 5. เปิดกล่อง info-message (ถ้ามีการซ่อน)
+  if (infoMessageBox) infoMessageBox.style.display = 'block';
+  // 6. รีเซ็ตกล้อง (ถ้าต้องการ)
+  camera.position.set(0, 0, 5);
+  camera.lookAt(0, 0, 0);
+}
 
-// เพิ่มฟังก์ชันการทำงานให้ปุ่มใหม่ (ตัวอย่างเช่น แสดงข้อความ)
+// กดปุ่มแล้วรีเซ็ตทุกอย่าง
 myNewButton.addEventListener('click', () => {
-  alert('คุณคลิกปุ่มใหม่!');
+  resetToInitialState();
 });
