@@ -447,18 +447,18 @@ if (infoMessageBox && toggleBtn) {
   });
 }
 
-// เพิ่มปุ่ม toggle ลอยใหม่สำหรับซ่อน/แสดงแถบข้อมูล
+// เพิ่มปุ่ม toggle ลอยใหม่สำหรับซ่อน/แสดงแถบข้อมูล (แสดงเฉพาะตอนมีข้อมูลโมเดล)
 let floatingToggleBtn = document.getElementById('info-floating-toggle-btn');
 if (!floatingToggleBtn) {
   floatingToggleBtn = document.createElement('button');
   floatingToggleBtn.id = 'info-floating-toggle-btn';
-  floatingToggleBtn.innerHTML = '▼'; // เริ่มต้นให้แถบข้อมูลแสดงอยู่
+  floatingToggleBtn.innerHTML = '▼';
   floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
   // สไตล์ปุ่มลอย
   floatingToggleBtn.style.position = 'fixed';
   floatingToggleBtn.style.right = '24px';
-  floatingToggleBtn.style.bottom = 'calc(25vh + 32px)';
-  floatingToggleBtn.style.zIndex = '30'; // ให้สูงกว่า info-message
+  floatingToggleBtn.style.bottom = '16px'; // ขยับลงต่ำกว่าเดิม
+  floatingToggleBtn.style.zIndex = '30';
   floatingToggleBtn.style.background = 'rgba(30,32,36,0.95)';
   floatingToggleBtn.style.color = '#fff';
   floatingToggleBtn.style.border = 'none';
@@ -469,7 +469,7 @@ if (!floatingToggleBtn) {
   floatingToggleBtn.style.opacity = '0.92';
   floatingToggleBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
   floatingToggleBtn.style.cursor = 'pointer';
-  floatingToggleBtn.style.display = 'block';
+  floatingToggleBtn.style.display = 'none'; // ซ่อนเริ่มต้น
   floatingToggleBtn.style.transition = 'bottom 0.3s cubic-bezier(.4,0,.2,1)';
   document.body.appendChild(floatingToggleBtn);
 }
@@ -481,13 +481,44 @@ if (infoMessageBox && floatingToggleBtn) {
       infoMessageBox.style.maxHeight = '25vh';
       floatingToggleBtn.innerHTML = '▼';
       floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-      floatingToggleBtn.style.bottom = 'calc(25vh + 32px)';
+      floatingToggleBtn.style.bottom = '16px';
     } else {
       infoMessageBox.classList.add('closed');
       infoMessageBox.style.maxHeight = '48px';
       floatingToggleBtn.innerHTML = '▲';
       floatingToggleBtn.title = 'แสดงแถบข้อมูล';
-      floatingToggleBtn.style.bottom = '72px';
+      floatingToggleBtn.style.bottom = '16px';
     }
   });
+}
+
+// ฟังก์ชันสำหรับแสดง/ซ่อนปุ่ม toggle ลอย ตามสถานะ info-content
+function updateFloatingToggleBtn() {
+  const infoContent = document.getElementById('info-content');
+  if (!floatingToggleBtn || !infoContent) return;
+  // ถ้ามีข้อมูลโมเดล (มี <h3> หรือ <p> หรือปุ่ม restart) ให้แสดงปุ่ม
+  if (
+    infoContent.querySelector('h3') ||
+    infoContent.querySelector('p') ||
+    infoContent.querySelector('#restart-scan-btn')
+  ) {
+    floatingToggleBtn.style.display = 'block';
+  } else {
+    floatingToggleBtn.style.display = 'none';
+    // คืนค่าแถบข้อมูลเป็นปกติเมื่อซ่อนปุ่ม
+    infoMessageBox.classList.remove('closed');
+    infoMessageBox.style.maxHeight = '25vh';
+    floatingToggleBtn.innerHTML = '▼';
+    floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
+    floatingToggleBtn.style.bottom = '16px';
+  }
+}
+
+// เรียกใช้ทุกครั้งที่ info-content เปลี่ยน
+const infoContent = document.getElementById('info-content');
+if (infoContent) {
+  const observer = new MutationObserver(updateFloatingToggleBtn);
+  observer.observe(infoContent, { childList: true, subtree: true });
+  // เรียกครั้งแรก
+  updateFloatingToggleBtn();
 }
