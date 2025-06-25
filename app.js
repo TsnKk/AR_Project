@@ -116,7 +116,6 @@ function loadFromQR(qrUrl) {
             }
             // 3. รีเซ็ตพื้นหลัง
             renderer.setClearColor(0x000000, 0); // โปร่งใส
-            // ลบ background ออกหลังจากเปิดกล้องใหม่
             document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
             rotationY = 0;
@@ -199,7 +198,6 @@ function loadFromQR(qrUrl) {
             }
             // 3. รีเซ็ตพื้นหลัง
             renderer.setClearColor(0x000000, 0); // โปร่งใส
-            // ลบ background ออกหลังจากเปิดกล้องใหม่
             document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
             rotationY = 0;
@@ -385,20 +383,24 @@ style.innerHTML = `
     background: transparent !important;
   }
   #info-message {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: env(safe-area-inset-bottom, 0);
-    width: 100vw;
-    max-width: 100vw;
-    border-radius: 0;: env(safe-area-inset-bottom, 0);
-    z-index: 10;
-    /* เพิ่มเติม: */#loading-screen {
-    margin: 0;
-
-
-
-
-document.head.appendChild(style);`;  }    z-index: 9999;  }
-`;
-document.head.appendChild(style);
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: env(safe-area-inset-bottom, 0);
+  width: 100vw;
+  max-width: 100vw;
+  border-radius: 0;
+  z-index: 10;
+  margin: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  background: rgba(30,32,36,0.95);
+  color: #fff;
+  padding: 18px 32px;
+  font-size: 1.1rem;
+  max-height: 35vh;
+  overflow-y: auto;
+  text-align: left;
+  font-family: 'Sarabun', Arial, sans-serif;
+  box-sizing: border-box;
+  }
+`;document.head.appendChild(style);
