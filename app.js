@@ -382,11 +382,12 @@ style.innerHTML = `
   }
   #info-message {
     position: fixed;
-    left: 50%;
-    bottom: 32px;
-    transform: translateX(-50%);
-    width: 90vw;
-    max-width: 500px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    max-width: 100vw;
+    border-radius: 0;
     z-index: 10;
   }
   #loading-screen {
