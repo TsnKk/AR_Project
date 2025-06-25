@@ -396,14 +396,58 @@ style.innerHTML = `
     padding-bottom: env(safe-area-inset-bottom, 0);
     background: rgba(30,32,36,0.95);
     color: #fff;
-    padding: 18px 32px;
+    padding: 18px 32px 18px 32px;
     font-size: 1.1rem;
-    max-height: 35vh;
+    max-height: 25vh; /* ลดความสูง */
     overflow-y: auto;
     text-align: left;
     font-family: 'Sarabun', Arial, sans-serif;
     box-sizing: border-box;
-    pointer-events: auto; /* รับ event เฉพาะปุ่มในกล่อง */
+    pointer-events: auto;
+    transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  #info-message.closed {
+    transform: translateY(100%);
+  }
+  #info-toggle-btn {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 20;
+    padding: 0;
+    margin: 0;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  #info-toggle-btn:hover {
+    opacity: 1;
   }
 `;
 document.head.appendChild(style);
+
+// เพิ่มปุ่ม toggle ปิด/เปิด info-message
+const infoMessageBox = document.getElementById('info-message');
+if (infoMessageBox && !document.getElementById('info-toggle-btn')) {
+  const toggleBtn = document.createElement('button');
+  toggleBtn.id = 'info-toggle-btn';
+  toggleBtn.innerHTML = '▼'; // ลูกศรลง
+  toggleBtn.title = 'ซ่อนแถบข้อมูล';
+  infoMessageBox.appendChild(toggleBtn);
+
+  toggleBtn.addEventListener('click', () => {
+    if (infoMessageBox.classList.contains('closed')) {
+      infoMessageBox.classList.remove('closed');
+      toggleBtn.innerHTML = '▼';
+      toggleBtn.title = 'ซ่อนแถบข้อมูล';
+    } else {
+      infoMessageBox.classList.add('closed');
+      toggleBtn.innerHTML = '▲';
+      toggleBtn.title = 'แสดงแถบข้อมูล';
+    }
+  });
+}
