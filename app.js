@@ -115,7 +115,7 @@ function loadFromQR(qrUrl) {
               infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
             }
             // 3. รีเซ็ตพื้นหลัง
-            renderer.setClearColor(0x181c20, 1);
+            renderer.setClearColor(0x000000, 0); // โปร่งใส
             // ลบ background ออกหลังจากเปิดกล้องใหม่
             document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
@@ -198,7 +198,7 @@ function loadFromQR(qrUrl) {
               infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
             }
             // 3. รีเซ็ตพื้นหลัง
-            renderer.setClearColor(0x181c20, 1);
+            renderer.setClearColor(0x000000, 0); // โปร่งใส
             // ลบ background ออกหลังจากเปิดกล้องใหม่
             document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
@@ -358,3 +358,36 @@ if (infoMessageEl && scrollArrow) {
   window.addEventListener('resize', updateScrollArrow);
   setTimeout(updateScrollArrow, 500);
 }
+
+// CSS Styles
+const style = document.createElement('style');
+style.innerHTML = `
+  #video {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+    background: transparent !important;
+  }
+  #canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 2;
+    background: transparent !important;
+  }
+  #info-message {
+    position: fixed;
+    left: 0; bottom: 0;
+    width: 100vw;
+    z-index: 10;
+  }
+  #loading-screen {
+    z-index: 9999;
+  }
+`;
+document.head.appendChild(style);
