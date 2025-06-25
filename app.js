@@ -372,13 +372,14 @@ style.innerHTML = `
     object-fit: cover;
     z-index: 1;
     background: transparent !important;
+    pointer-events: none; /* ไม่รับ event */
   }
   #canvas {
     position: fixed;
     top: 0; left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: auto;
+    pointer-events: auto; /* รับ event */
     z-index: 2;
     background: transparent !important;
   }
@@ -402,5 +403,7 @@ style.innerHTML = `
     text-align: left;
     font-family: 'Sarabun', Arial, sans-serif;
     box-sizing: border-box;
+    pointer-events: auto; /* รับ event เฉพาะปุ่มในกล่อง */
   }
-`;document.head.appendChild(style);
+`;
+document.head.appendChild(style);
