@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ฟอร์มลงทะเบียนข้อมูลเกษตรกร/ชาวสวน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            padding: 20px 40px;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eeeeee;
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin: 0;
+        }
+
+        .form-section-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #0056b3;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            display: grid;
+            grid-template-columns: 170px 1fr; 
+            align-items: center;
+            gap: 15px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            color: #555;
+            text-align: right;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="tel"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .profile-pic-preview {
+            width: 150px;
+            height: 150px;
+            border: 2px dashed #ccc;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px auto 25px auto;
+            cursor: pointer;
+            overflow: hidden;
+            background-color: #f8f8f8;
+            color: #aaa;
+            text-align: center;
+        }
+        
+        .profile-pic-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .submit-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .submit-button:hover {
+            background-color: #218838;
+        }
+
+        /* สำหรับหน้าจอขนาดเล็ก */
+        @media (max-width: 600px) {
+            .form-group {
+                grid-template-columns: 1fr;
+                gap: 5px;
+            }
+            .form-group label {
+                text-align: left;
+                margin-bottom: 2px;
+            }
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="header">
+            <h1>ฟอร์มลงทะเบียนข้อมูลเกษตรกร/ชาวสวน</h1>
+        </div>
+        
+        <form id="farmerForm">
+            <div id="profilePicPreview" class="profile-pic-preview" onclick="document.getElementById('profilePicInput').click();">
+                <span>อัปโหลดรูปโปรไฟล์<br/>หรือโลโก้สวน</span>
+            </div>
+            <input type="file" id="profilePicInput" name="profile_pic" accept="image/*" style="display:none;">
+
+            <div class="form-section-header">ข้อมูลส่วนตัว</div>
+            
+            <div class="form-group">
+                <label for="fullName">ชื่อ-นามสกุล :</label>
+                <div style="display: grid; grid-template-columns: 80px 1fr 1fr; gap: 5px;">
+                    <select id="titleName" name="title_name" required>
+                        <option value="นาย">นาย</option>
+                        <option value="นาง">นาง</option>
+                        <option value="นางสาว">นางสาว</option>
+                    </select>
+                    <input type="text" id="firstName" name="first_name" placeholder="ชื่อ" required>
+                    <input type="text" id="lastName" name="last_name" placeholder="นามสกุล" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">เบอร์โทรศัพท์ :</label>
+                <input type="tel" id="phone" name="phone_number" placeholder="กรอกเบอร์โทรศัพท์ที่ติดต่อได้" required>
+            </div>
+            
+            <div class="form-section-header">ข้อมูลสวน / ร้านค้า</div>
+
+            <div class="form-group">
+                <label for="farmName">ชื่อร้าน / ชื่อสวน :</label>
+                <input type="text" id="farmName" name="farm_name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="farmerId">เลขทะเบียนเกษตรกร :</label>
+                <input type="text" id="farmerId" name="farmer_id" placeholder="(ถ้ามี)">
+            </div>
+            
+            <div class="form-group">
+                <label for="productType">ประเภทสินค้าหลัก :</label>
+                <input type="text" id="productType" name="product_type" placeholder="เช่น ไม้ผล, ไม้ดอกไม้ประดับ, ผักสวนครัว">
+            </div>
+
+            <div class="form-group">
+                <label for="address">ที่อยู่สวน/ร้านค้า :</label>
+                <textarea id="address" name="address" rows="3" placeholder="บ้านเลขที่, หมู่, ถนน, ตำบล/แขวง, อำเภอ/เขต, จังหวัด, รหัสไปรษณีย์" required></textarea>
+            </div>
+
+            <div class="form-section-header">ช่องทางการติดต่อและอื่นๆ</div>
+
+             <div class="form-group">
+                <label for="lineId">Line ID :</label>
+                <input type="text" id="lineId" name="line_id" placeholder="ID Line สำหรับติดต่อ">
+            </div>
+
+            <div class="form-group">
+                <label for="facebookPage">Facebook Page :</label>
+                <input type="text" id="facebookPage" name="facebook_page" placeholder="URL หรือชื่อเพจ Facebook">
+            </div>
+
+            <div class="form-group">
+                <label for="aboutFarm">เกี่ยวกับสวน :</label>
+                <textarea id="aboutFarm" name="about_farm" rows="4" placeholder="แนะนำสวนของคุณ, จุดเด่นของสินค้า, หรือข้อมูลอื่นๆ เพิ่มเติม"></textarea>
+            </div>
+
+            <button type="submit" class="submit-button">ลงทะเบียน / บันทึกข้อมูล</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript สำหรับแสดงภาพเด้อ
+        const profilePicInput = document.getElementById('profilePicInput');
+        const profilePicPreview = document.getElementById('profilePicPreview');
+
+        profilePicInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePicPreview.innerHTML = `<img src="${e.target.result}" alt="Profile Preview">`;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+
+</body>
+</html>
