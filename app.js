@@ -221,10 +221,10 @@ const style = document.createElement('style');
 style.textContent = `
   #my-new-btn {
     position: fixed;
-    bottom: 140px; /* อยู่เหนือปุ่ม AR */
     left: 50%;
+    bottom: calc(35vh + 32px); /* อยู่เหนือ info-message (max-height 35vh + padding) */
     transform: translateX(-50%);
-    z-index: 20;
+    z-index: 21;
     background: #00c896;
     color: #fff;
     border: none;
@@ -236,6 +236,7 @@ style.textContent = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.2);
     transition: background 0.2s;
     font-family: 'Sarabun', Arial, sans-serif;
+    display: none; /* ซ่อนเริ่มต้น */
   }
   #my-new-btn:hover {
     background: #009e74;
@@ -248,6 +249,20 @@ const myNewButton = document.createElement('button');
 myNewButton.id = 'my-new-btn';
 myNewButton.textContent = 'ปุ่มใหม่';
 document.body.append(myNewButton);
+
+// ให้ปุ่มใหม่แสดง/ซ่อนพร้อมปุ่ม AR
+const arBtn = document.getElementById('ar-btn');
+const showMyNewBtn = (show) => {
+  myNewButton.style.display = show ? 'block' : 'none';
+};
+const observerAR = new MutationObserver(() => {
+  showMyNewBtn(arBtn.style.display !== 'none');
+});
+observerAR.observe(arBtn, { attributes: true, attributeFilter: ['style'] });
+// กรณีมีการเปลี่ยน display ด้วย class
+const arBtnDisplayCheck = () => showMyNewBtn(window.getComputedStyle(arBtn).display !== 'none');
+arBtnDisplayCheck();
+window.addEventListener('resize', arBtnDisplayCheck);
 
 // เพิ่มฟังก์ชันการทำงานให้ปุ่มใหม่ (ตัวอย่างเช่น แสดงข้อความ)
 myNewButton.addEventListener('click', () => {
