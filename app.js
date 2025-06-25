@@ -382,8 +382,11 @@ style.innerHTML = `
   }
   #info-message {
     position: fixed;
-    left: 0; bottom: 0;
-    width: 100vw;
+    left: 50%;
+    bottom: 32px;
+    transform: translateX(-50%);
+    width: 90vw;
+    max-width: 500px;
     z-index: 10;
   }
   #loading-screen {
