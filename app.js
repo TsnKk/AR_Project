@@ -98,7 +98,35 @@ function loadFromQR(qrUrl) {
         const restartBtn = document.getElementById('restart-scan-btn');
         if (restartBtn) {
           restartBtn.addEventListener('click', () => {
-            infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            // 1. ลบโมเดลออกจาก scene
+            if (model) {
+              scene.remove(model);
+              model.traverse(child => {
+                if (child.isMesh) {
+                  child.geometry.dispose();
+                  child.material.dispose();
+                }
+              });
+              model = null;
+            }
+            // 2. รีเซ็ตข้อความ info-content
+            const infoContent = document.getElementById('info-content');
+            if (infoContent) {
+              infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            }
+            // 3. รีเซ็ตพื้นหลัง
+            renderer.setClearColor(0x181c20, 1);
+            document.body.style.background = "#181c20";
+            // 4. รีเซ็ตตัวแปรควบคุมโมเดล
+            rotationY = 0;
+            rotationX = 0;
+            // 5. กล้องกลับไปตำแหน่งเริ่มต้น
+            camera.position.set(0, 0, 5);
+            camera.lookAt(0, 0, 0);
+            // 6. แสดง info-message (ถ้ามีการซ่อน)
+            const infoMessageBox = document.getElementById('info-message');
+            if (infoMessageBox) infoMessageBox.style.display = 'block';
+            // 7. เปิดกล้องใหม่
             isScanning = false;
             codeReader.reset();
             codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
@@ -150,7 +178,35 @@ function loadFromQR(qrUrl) {
         const restartBtn = document.getElementById('restart-scan-btn');
         if (restartBtn) {
           restartBtn.addEventListener('click', () => {
-            infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            // 1. ลบโมเดลออกจาก scene
+            if (model) {
+              scene.remove(model);
+              model.traverse(child => {
+                if (child.isMesh) {
+                  child.geometry.dispose();
+                  child.material.dispose();
+                }
+              });
+              model = null;
+            }
+            // 2. รีเซ็ตข้อความ info-content
+            const infoContent = document.getElementById('info-content');
+            if (infoContent) {
+              infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+            }
+            // 3. รีเซ็ตพื้นหลัง
+            renderer.setClearColor(0x181c20, 1);
+            document.body.style.background = "#181c20";
+            // 4. รีเซ็ตตัวแปรควบคุมโมเดล
+            rotationY = 0;
+            rotationX = 0;
+            // 5. กล้องกลับไปตำแหน่งเริ่มต้น
+            camera.position.set(0, 0, 5);
+            camera.lookAt(0, 0, 0);
+            // 6. แสดง info-message (ถ้ามีการซ่อน)
+            const infoMessageBox = document.getElementById('info-message');
+            if (infoMessageBox) infoMessageBox.style.display = 'block';
+            // 7. เปิดกล้องใหม่
             isScanning = false;
             codeReader.reset();
             codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
@@ -296,81 +352,3 @@ if (infoMessageEl && scrollArrow) {
   window.addEventListener('resize', updateScrollArrow);
   setTimeout(updateScrollArrow, 500);
 }
-
-// เพิ่ม CSS ด้วย JavaScript (สีปุ่มใหม่และสีตอนกด)
-const style = document.createElement('style');
-style.textContent = `
-  #my-new-btn {
-    margin-bottom: 12px;
-    width: 100%;
-    background: #00c896;
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 0;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    transition: background 0.2s;
-    font-family: 'Sarabun', Arial, sans-serif;
-    display: block;
-    z-index: 10000;
-  }
-  #my-new-btn:hover, #my-new-btn:active {
-    background: #2196f3;
-  }
-  #info-message {
-    z-index: 9999 !important;
-  }
-`;
-document.head.append(style);
-
-// สร้างปุ่มใหม่
-const myNewButton = document.createElement('button');
-myNewButton.id = 'my-new-btn';
-myNewButton.textContent = 'สแกนใหม่';
-
-// ใส่ปุ่มไว้บนสุดใน info-message
-const infoMessageBox = document.getElementById('info-message');
-if (infoMessageBox) {
-  infoMessageBox.style.zIndex = "9999";
-  infoMessageBox.insertBefore(myNewButton, infoMessageBox.firstChild);
-}
-myNewButton.style.zIndex = "10000";
-
-// ฟังก์ชันรีเซ็ตหน้าเว็บให้เหมือนตอนเข้าใหม่
-function resetToInitialState() {
-  // 1. ลบโมเดลออกจาก scene
-  if (model) {
-    scene.remove(model);
-    model.traverse(child => {
-      if (child.isMesh) {
-        child.geometry.dispose();
-        child.material.dispose();
-      }
-    });
-    model = null;
-  }
-  // 2. รีเซ็ตข้อความ info-message
-  const infoContent = document.getElementById('info-content');
-  if (infoContent) {
-    infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
-  }
-  // 3. รีเซ็ตพื้นหลัง
-  renderer.setClearColor(0x181c20, 1);
-  document.body.style.background = "#181c20";
-  // 4. รีเซ็ตตัวแปรควบคุมโมเดล
-  rotationY = 0;
-  rotationX = 0;
-  // 5. เปิดกล่อง info-message (ถ้ามีการซ่อน)
-  if (infoMessageBox) infoMessageBox.style.display = 'block';
-  // 6. รีเซ็ตกล้อง (ถ้าต้องการ)
-  camera.position.set(0, 0, 5);
-  camera.lookAt(0, 0, 0);
-}
-
-// กดปุ่มแล้วรีเซ็ตทุกอย่าง
-myNewButton.addEventListener('click', () => {
-  resetToInitialState();
-});
