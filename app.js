@@ -433,16 +433,52 @@ document.head.appendChild(style);
 // เพิ่มปุ่ม toggle ปิด/เปิด info-message
 const infoMessageBox = document.getElementById('info-message');
 const toggleBtn = document.getElementById('info-toggle-btn');
-if (infoMessageBox && toggleBtn) {
+
+// สร้างปุ่มลอยสำหรับแสดง info-message เมื่อถูกซ่อน
+let floatingShowBtn = document.getElementById('info-floating-show-btn');
+if (!floatingShowBtn) {
+  floatingShowBtn = document.createElement('button');
+  floatingShowBtn.id = 'info-floating-show-btn';
+  floatingShowBtn.innerHTML = '▲';
+  floatingShowBtn.title = 'แสดงแถบข้อมูล';
+  floatingShowBtn.style.display = 'none';
+  floatingShowBtn.style.position = 'fixed';
+  floatingShowBtn.style.left = '50%';
+  floatingShowBtn.style.bottom = '32px';
+  floatingShowBtn.style.transform = 'translateX(-50%)';
+  floatingShowBtn.style.zIndex = '20';
+  floatingShowBtn.style.background = '#23262b';
+  floatingShowBtn.style.color = '#fff';
+  floatingShowBtn.style.border = 'none';
+  floatingShowBtn.style.borderRadius = '50%';
+  floatingShowBtn.style.width = '48px';
+  floatingShowBtn.style.height = '48px';
+  floatingShowBtn.style.fontSize = '2rem';
+  floatingShowBtn.style.opacity = '0.85';
+  floatingShowBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+  floatingShowBtn.style.cursor = 'pointer';
+  document.body.appendChild(floatingShowBtn);
+}
+
+if (infoMessageBox && toggleBtn && floatingShowBtn) {
   toggleBtn.addEventListener('click', () => {
     if (infoMessageBox.classList.contains('closed')) {
       infoMessageBox.classList.remove('closed');
       toggleBtn.innerHTML = '▼';
       toggleBtn.title = 'ซ่อนแถบข้อมูล';
+      floatingShowBtn.style.display = 'none';
     } else {
       infoMessageBox.classList.add('closed');
       toggleBtn.innerHTML = '▲';
       toggleBtn.title = 'แสดงแถบข้อมูล';
+      floatingShowBtn.style.display = 'block';
     }
+  });
+
+  floatingShowBtn.addEventListener('click', () => {
+    infoMessageBox.classList.remove('closed');
+    toggleBtn.innerHTML = '▼';
+    toggleBtn.title = 'ซ่อนแถบข้อมูล';
+    floatingShowBtn.style.display = 'none';
   });
 }
