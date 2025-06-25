@@ -296,7 +296,7 @@ if (infoMessageEl && scrollArrow) {
   setTimeout(updateScrollArrow, 500);
 }
 
-// CSS สำหรับปุ่มใหม่ (คุมธีมเดียวกับปุ่ม AR)
+// เพิ่ม CSS ด้วย JavaScript (ถูกต้อง)
 const style = document.createElement('style');
 style.textContent = `
   #my-new-btn {
@@ -313,10 +313,14 @@ style.textContent = `
     box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     transition: background 0.2s;
     font-family: 'Sarabun', Arial, sans-serif;
-    display: none; /* ซ่อนเริ่มต้น */
+    display: none;
+    z-index: 10000;
   }
   #my-new-btn:hover {
     background: #009e74;
+  }
+  #info-message {
+    z-index: 9999 !important;
   }
 `;
 document.head.append(style);
@@ -352,19 +356,3 @@ window.addEventListener('resize', arBtnDisplayCheck);
 myNewButton.addEventListener('click', () => {
   alert('คุณคลิกปุ่มใหม่!');
 });
-
-/* เพิ่ม z-index ให้ info-message และปุ่มใหม่ */
-#info-message {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  max-height: 35vh;
-  background: #23262b;
-
-
-  z-index: 9999; /* เพิ่มบรรทัดนี้ */  color: #fff;  /* ...อื่นๆ... */
-}
-#my-new-btn {
-  z-index: 10000; /* เพิ่มบรรทัดนี้ */
-}
