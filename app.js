@@ -446,3 +446,50 @@ if (infoMessageBox && toggleBtn) {
     }
   });
 }
+
+// เพิ่มปุ่ม toggle ลอยใหม่สำหรับซ่อน/แสดงแถบข้อมูล
+let floatingToggleBtn = document.getElementById('info-floating-toggle-btn');
+if (!floatingToggleBtn) {
+  floatingToggleBtn = document.createElement('button');
+  floatingToggleBtn.id = 'info-floating-toggle-btn';
+  floatingToggleBtn.innerHTML = '▲'; // เริ่มต้นให้แถบข้อมูลแสดงอยู่
+  floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
+  // สไตล์ปุ่มลอย
+  floatingToggleBtn.style.position = 'fixed';
+  floatingToggleBtn.style.right = '24px';
+  floatingToggleBtn.style.bottom = 'calc(25vh + 24px)'; // ลอยเหนือ info-message
+  floatingToggleBtn.style.zIndex = '20';
+  floatingToggleBtn.style.background = 'rgba(30,32,36,0.95)';
+  floatingToggleBtn.style.color = '#fff';
+  floatingToggleBtn.style.border = 'none';
+  floatingToggleBtn.style.borderRadius = '50%';
+  floatingToggleBtn.style.width = '48px';
+  floatingToggleBtn.style.height = '48px';
+  floatingToggleBtn.style.fontSize = '2rem';
+  floatingToggleBtn.style.opacity = '0.85';
+  floatingToggleBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
+  floatingToggleBtn.style.cursor = 'pointer';
+  floatingToggleBtn.style.display = 'block';
+  document.body.appendChild(floatingToggleBtn);
+}
+
+const infoMessageBox = document.getElementById('info-message');
+if (infoMessageBox && floatingToggleBtn) {
+  floatingToggleBtn.addEventListener('click', () => {
+    if (infoMessageBox.classList.contains('closed')) {
+      infoMessageBox.classList.remove('closed');
+      infoMessageBox.style.maxHeight = '25vh';
+      floatingToggleBtn.innerHTML = '▲';
+      floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
+      // ปรับตำแหน่งปุ่มลอยกลับขึ้น
+      floatingToggleBtn.style.bottom = 'calc(25vh + 24px)';
+    } else {
+      infoMessageBox.classList.add('closed');
+      infoMessageBox.style.maxHeight = '48px';
+      floatingToggleBtn.innerHTML = '▼';
+      floatingToggleBtn.title = 'แสดงแถบข้อมูล';
+      // ปรับตำแหน่งปุ่มลอยลงมาติดขอบ info-message ที่ถูกย่อ
+      floatingToggleBtn.style.bottom = '72px';
+    }
+  });
+}
