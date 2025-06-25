@@ -436,19 +436,13 @@ const toggleBtn = document.getElementById('info-toggle-btn');
 if (infoMessageBox && toggleBtn) {
   toggleBtn.addEventListener('click', () => {
     if (infoMessageBox.classList.contains('closed')) {
-      // แสดงแถบข้อมูล: กลับไป max-height เดิม
       infoMessageBox.classList.remove('closed');
-      infoMessageBox.style.maxHeight = '25vh';
       toggleBtn.innerHTML = '▼';
       toggleBtn.title = 'ซ่อนแถบข้อมูล';
     } else {
-      // ซ่อนแถบข้อมูล: ยกขึ้นมา (ลด max-height ให้เหลือแค่ปุ่ม)
       infoMessageBox.classList.add('closed');
-      infoMessageBox.style.maxHeight = '48px'; // หรือปรับตามขนาดปุ่ม toggle
       toggleBtn.innerHTML = '▲';
       toggleBtn.title = 'แสดงแถบข้อมูล';
     }
   });
 }
-
-// ถ้าใช้ CSS .closed เดิม ให้ลบหรือไม่ใช้ max-height ใน .closed เพื่อควบคุมด้วย JS แทน
