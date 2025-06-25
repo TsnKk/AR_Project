@@ -116,7 +116,8 @@ function loadFromQR(qrUrl) {
             }
             // 3. รีเซ็ตพื้นหลัง
             renderer.setClearColor(0x181c20, 1);
-            document.body.style.background = "#181c20";
+            // ลบ background ออกหลังจากเปิดกล้องใหม่
+            document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
             rotationY = 0;
             rotationX = 0;
@@ -134,6 +135,8 @@ function loadFromQR(qrUrl) {
                 isScanning = true;
                 const url = result.getText();
                 console.log('QR Detected:', url);
+                // ใส่ background ใหม่ตอนสแกนเสร็จ (ตอนโหลดโมเดล)
+                document.body.style.background = "#fff";
                 loadFromQR(url);
               }
             });
@@ -196,7 +199,8 @@ function loadFromQR(qrUrl) {
             }
             // 3. รีเซ็ตพื้นหลัง
             renderer.setClearColor(0x181c20, 1);
-            document.body.style.background = "#181c20";
+            // ลบ background ออกหลังจากเปิดกล้องใหม่
+            document.body.style.background = "none";
             // 4. รีเซ็ตตัวแปรควบคุมโมเดล
             rotationY = 0;
             rotationX = 0;
@@ -214,6 +218,8 @@ function loadFromQR(qrUrl) {
                 isScanning = true;
                 const url = result.getText();
                 console.log('QR Detected:', url);
+                // ใส่ background ใหม่ตอนสแกนเสร็จ (ตอนโหลดโมเดล)
+                document.body.style.background = "#fff";
                 loadFromQR(url);
               }
             });
