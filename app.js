@@ -9,7 +9,7 @@ const infoMessage = document.getElementById('info-message');
 // ✅ สร้าง Scene, Camera และ Renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.01, 100);
-camera.position.z = 5;
+camera.position.z = 5;  // ตั้งกล้องให้ห่างจากโมเดล 5 หน่วย
 
 const renderer = new THREE.WebGLRenderer({
   canvas: document.getElementById('canvas'),
@@ -42,7 +42,7 @@ function loadModel(url) {
     // เพิ่มโมเดลใหม่เข้า scene
     model = gltf.scene;
     model.scale.set(1.0, 1.0, 1.0);
-    model.position.y = 0.5; // ขยับโมเดลขึ้นเล็กน้อย
+    model.position.y = 1; // ขยับโมเดลขึ้นเล็กน้อย
     scene.add(model);
   }, undefined, error => console.error('Error loading model:', error));
 }
@@ -220,20 +220,17 @@ if (infoMessageEl && scrollArrow) {
 const style = document.createElement('style');
 style.textContent = `
   #my-new-btn {
-    position: fixed;
-    left: 50%;
-    bottom: calc(35vh + 32px); /* อยู่เหนือ info-message (max-height 35vh + padding) */
-    transform: translateX(-50%);
-    z-index: 21;
+    margin-bottom: 12px;
+    width: 100%;
     background: #00c896;
     color: #fff;
     border: none;
     border-radius: 8px;
-    padding: 14px 32px;
+    padding: 12px 0;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     transition: background 0.2s;
     font-family: 'Sarabun', Arial, sans-serif;
     display: none; /* ซ่อนเริ่มต้น */
@@ -248,7 +245,12 @@ document.head.append(style);
 const myNewButton = document.createElement('button');
 myNewButton.id = 'my-new-btn';
 myNewButton.textContent = 'ปุ่มใหม่';
-document.body.append(myNewButton);
+
+// ใส่ปุ่มไว้บนสุดใน info-message
+const infoMessageBox = document.getElementById('info-message');
+if (infoMessageBox) {
+  infoMessageBox.insertBefore(myNewButton, infoMessageBox.firstChild);
+}
 
 // ให้ปุ่มใหม่แสดง/ซ่อนพร้อมปุ่ม AR
 const arBtn = document.getElementById('ar-btn');
