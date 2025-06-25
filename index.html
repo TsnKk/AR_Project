@@ -30,24 +30,25 @@
 
     #info-message {
       position: fixed;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      z-index: 20;
+      left: 0;
+      right: 0;
+      bottom: env(safe-area-inset-bottom, 0);
+      width: 100vw;
+      max-width: 100vw;
+      border-radius: 0;
+      z-index: 10;
+      margin: 0;
+      padding-bottom: env(safe-area-inset-bottom, 0);
       background: rgba(30,32,36,0.95);
       color: #fff;
       padding: 18px 32px;
       border-radius: 12px 12px 0 0;
       font-size: 1.1rem;
-      max-width: 500px;
-      width: calc(100vw - 32px);
-      box-shadow: 0 -2px 8px rgba(0,0,0,0.2);
       max-height: 35vh;
       overflow-y: auto;
       text-align: left;
       font-family: 'Sarabun', Arial, sans-serif;
       box-sizing: border-box;
-      margin: 0;
     }
     #info-message::-webkit-scrollbar {
       width: 8px;
@@ -109,18 +110,53 @@
         max-width: 100vw;
       }
     }
+
+    #loading-screen {
+      position:fixed;
+      top:0;
+      left:0;
+      width:100vw;
+      height:100vh;
+      background:#181c20;
+      z-index: 9999;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:1.5rem;
+      font-family:'Sarabun',Arial,sans-serif;
+    }
+    #loading-screen .title {
+      font-size:2rem;
+      font-weight:bold;
+      margin-bottom:24px;
+    }
+    #loading-screen .message {
+      margin-bottom:16px;
+    }
+    #loading-bar-bg {
+      width:220px;
+      height:16px;
+      background:#23262b;
+      border-radius:8px;
+      overflow:hidden;
+    }
+    #loading-bar {
+      width:0%;
+      height:100%;
+      background:#00c896;
+      transition:width 0.3s;
+    }
   </style>
 </head>
 <body>
   <!-- 🟢 Loading Screen -->
-  <div id="loading-screen" style="
-    position:fixed;top:0;left:0;width:100vw;height:100vh;
-    background:#181c20;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    color:#fff;font-size:1.5rem;font-family:'Sarabun',Arial,sans-serif;">
-    <div style="font-size:2rem;font-weight:bold;margin-bottom:24px;">WebAR Demo</div>
-    <div style="margin-bottom:16px;">กำลังโหลด...</div>
-    <div id="loading-bar-bg" style="width:220px;height:16px;background:#23262b;border-radius:8px;overflow:hidden;">
-      <div id="loading-bar" style="width:0%;height:100%;background:#00c896;transition:width 0.3s;"></div>
+  <div id="loading-screen">
+    <div class="title">WebAR Demo</div>
+    <div class="message">กำลังโหลด...</div>
+    <div id="loading-bar-bg">
+      <div id="loading-bar"></div>
     </div>
   </div>
   

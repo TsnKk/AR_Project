@@ -362,6 +362,10 @@ if (infoMessageEl && scrollArrow) {
 // CSS Styles
 const style = document.createElement('style');
 style.innerHTML = `
+  body, html {
+    margin: 0;
+    padding: 0;
+  }
   #video {
     position: fixed;
     top: 0; left: 0;
@@ -384,14 +388,17 @@ style.innerHTML = `
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: env(safe-area-inset-bottom, 0);
     width: 100vw;
     max-width: 100vw;
-    border-radius: 0;
+    border-radius: 0;: env(safe-area-inset-bottom, 0);
     z-index: 10;
-  }
-  #loading-screen {
-    z-index: 9999;
-  }
+    /* เพิ่มเติม: */#loading-screen {
+    margin: 0;
+
+
+
+
+document.head.appendChild(style);`;  }    z-index: 9999;  }
 `;
 document.head.appendChild(style);
