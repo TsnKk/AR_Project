@@ -25,10 +25,8 @@ scene.add(light);
 let model = null; // ตัวแปรเก็บโมเดล 3D ปัจจุบัน
 
 // ✅ ฟังก์ชันโหลดและแสดงโมเดล 3D (.glb) พร้อมแสดง progress
-function loadModel(url) {
+function loadModel(url, onLoaded) {
   const loader = new GLTFLoader();
-
-  // โชว์ loading screen ตอนโหลดโมเดล
   if (window.showModelLoading) window.showModelLoading();
 
   loader.load(
@@ -53,6 +51,9 @@ function loadModel(url) {
 
       // ซ่อน loading screen
       if (window.hideModelLoading) window.hideModelLoading();
+
+      // เรียก callback ถ้ามี
+      if (typeof onLoaded === 'function') onLoaded();
     },
     // onProgress
     xhr => {
@@ -77,96 +78,104 @@ function loadFromQR(qrUrl) {
   fetch(jsonUrl)
     .then(res => res.json())
     .then(data => {
-      // ✅ เซ็ตเฉพาะ info-content ไม่ทับ scroll-arrow
       const infoContent = document.getElementById('info-content');
       if (infoContent) {
-        infoContent.innerHTML = `
-          <button id="restart-scan-btn" style="
-            display:block;
-            width:100%;
-            margin-bottom:16px;
-            background:#23262b;
-            color:#fff;
-            border:none;
-            border-radius:8px;
-            padding:12px 0;
-            font-size:1.05rem;
-            font-weight:bold;
-            font-family:'Sarabun',Arial,sans-serif;
-            cursor:pointer;
-            transition:background 0.2s;
-          ">🔄 เริ่มสแกนใหม่</button>
-          <h3>${data.name || ''}</h3>
-          <p>${data.description || ''}</p>
-          <strong>ข้อมูลสินค้า</strong><br>
-          <p><strong>ชนิดผลไม้:</strong> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/, '') : ''}</p>
-          <p><strong>ขนาด:</strong> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/, '') : ''}</p>
-          <p><strong>น้ำหนัก:</strong> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/, '') : ''}</p>
-          <p><strong>ราคาต่อกิโลกรัม:</strong> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/, '') : ''}</p>
-          <p><strong>วันที่เก็บ:</strong> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/, '') : ''}</p>
-          <strong>ข้อมูลสวน</strong><br>
-          <p><strong>ชื่อสวน:</strong> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/, '') : ''}</p>
-          <p><strong>เจ้าของสวน:</strong> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/, '') : ''}</p>
-          <p><strong>ตำแหน่งสวน:</strong> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/, '') : ''}</p>
-          <p><strong>ฤดูกาลเก็บเกี่ยว:</strong> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/, '') : ''}</p>
-          <p><strong>ปุ๋ยที่ใช้:</strong> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/, '') : ''}</p>
-          <strong>การเก็บรักษา</strong><br>
-          <p><strong>อายุการเก็บรักษา:</strong> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/, '') : ''}</p>
-          <p><strong>วิธีเก็บรักษา:</strong> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/, '') : ''}</p>
-          <strong>คุณค่าทางโภชนาการ</strong><br>
-          <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/, '') : ''}</p>
-        `;
-        // เพิ่ม event ให้ปุ่ม "เริ่มสแกนใหม่"
-        const restartBtn = document.getElementById('restart-scan-btn');
-        if (restartBtn) {
-          restartBtn.addEventListener('click', () => {
-            // 1. ลบโมเดลออกจาก scene
-            if (model) {
-              scene.remove(model);
-              model.traverse(child => {
-                if (child.isMesh) {
-                  child.geometry.dispose();
-                  child.material.dispose();
-                }
-              });
-              model = null;
-            }
-            // 2. รีเซ็ตข้อความ info-content
-            const infoContent = document.getElementById('info-content');
-            if (infoContent) {
-              infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
-            }
-            // 3. รีเซ็ตพื้นหลัง
-            renderer.setClearColor(0x000000, 0); // โปร่งใส
-            document.body.style.background = "none";
-            // 4. รีเซ็ตตัวแปรควบคุมโมเดล
-            rotationY = 0;
-            rotationX = 0;
-            // 5. กล้องกลับไปตำแหน่งเริ่มต้น
-            camera.position.set(0, 0, 5);
-            camera.lookAt(0, 0, 0);
-            // 6. แสดง info-message (ถ้ามีการซ่อน)
-            const infoMessageBox = document.getElementById('info-message');
-            if (infoMessageBox) infoMessageBox.style.display = 'block';
-            // 7. เปิดกล้องใหม่
-            isScanning = false;
-            codeReader.reset();
-            codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
-              if (result && !isScanning) {
-                isScanning = true;
-                const url = result.getText();
-                console.log('QR Detected:', url);
-                // ใส่ background ใหม่ตอนสแกนเสร็จ (ตอนโหลดโมเดล)
-                document.body.style.background = "#fff";
-                loadFromQR(url);
-              }
-            });
-          });
-        }
+        // แสดงข้อความกำลังโหลดโมเดล
+        infoContent.innerHTML = `<div style="text-align:center;padding:32px 0;">⏳ กำลังโหลดโมเดล...</div>`;
       }
 
-      // ✅ ไม่ต้อง remove model ที่นี่ เพราะ loadModel จะจัดการเอง
+      // โหลดโมเดล 3D
       loadModel(data.model);
+
+      // เมื่อโหลดโมเดลเสร็จ ให้แสดงเนื้อหาจริง
+      // ต้องแก้ฟังก์ชัน loadModel ให้รับ callback
+      loadModel(data.model, () => {
+        if (infoContent) {
+          infoContent.innerHTML = `
+            <button id="restart-scan-btn" style="
+              display:block;
+              width:100%;
+              margin-bottom:16px;
+              background:#23262b;
+              color:#fff;
+              border:none;
+              border-radius:8px;
+              padding:12px 0;
+              font-size:1.05rem;
+              font-weight:bold;
+              font-family:'Sarabun',Arial,sans-serif;
+              cursor:pointer;
+              transition:background 0.2s;
+            ">🔄 เริ่มสแกนใหม่</button>
+            <h3>${data.name || ''}</h3>
+            <p>${data.description || ''}</p>
+            <strong>ข้อมูลสินค้า</strong><br>
+            <p><strong>ชนิดผลไม้:</strong> ${data.fruit_type ? data.fruit_type.replace(/^ชนิดผลไม้\s*:\s*/, '') : ''}</p>
+            <p><strong>ขนาด:</strong> ${data.size ? data.size.replace(/^ขนาด\s*:\s*/, '') : ''}</p>
+            <p><strong>น้ำหนัก:</strong> ${data.weight ? data.weight.replace(/^น้ำหนัก\s*:\s*/, '') : ''}</p>
+            <p><strong>ราคาต่อกิโลกรัม:</strong> ${data.price_per_kg ? data.price_per_kg.replace(/^ราคาต่อกิโล\s*:\s*/, '') : ''}</p>
+            <p><strong>วันที่เก็บ:</strong> ${data.harvest_date ? data.harvest_date.replace(/^วันที่เก็บ\s*:\s*/, '') : ''}</p>
+            <strong>ข้อมูลสวน</strong><br>
+            <p><strong>ชื่อสวน:</strong> ${data.farm_name ? data.farm_name.replace(/^ชื่อสวน\s*:\s*/, '') : ''}</p>
+            <p><strong>เจ้าของสวน:</strong> ${data.owner ? data.owner.replace(/^เจ้าของสวน\s*:\s*/, '') : ''}</p>
+            <p><strong>ตำแหน่งสวน:</strong> ${data.origin ? data.origin.replace(/^ตำแหน่งสวน\s*:\s*/, '') : ''}</p>
+            <p><strong>ฤดูกาลเก็บเกี่ยว:</strong> ${data.season ? data.season.replace(/^ฤดูกาลเก็บเกี่ยว\s*:\s*/, '') : ''}</p>
+            <p><strong>ปุ๋ยที่ใช้:</strong> ${data.fertilizer ? data.fertilizer.replace(/^ปุ๋ยที่ใช้\s*:\s*/, '') : ''}</p>
+            <strong>การเก็บรักษา</strong><br>
+            <p><strong>อายุการเก็บรักษา:</strong> ${data.shelf_life ? data.shelf_life.replace(/^อายุการเก็บรักษา\s*:\s*/, '') : ''}</p>
+            <p><strong>วิธีเก็บรักษา:</strong> ${data.storage_conditions ? data.storage_conditions.replace(/^วิธีเก็บรักษา\s*:\s*/, '') : ''}</p>
+            <strong>คุณค่าทางโภชนาการ</strong><br>
+            <p>${data.nutritional_value ? data.nutritional_value.replace(/^คุณค่าทางโภชนาการ\s*:\s*/, '') : ''}</p>
+          `;
+          // เพิ่ม event ให้ปุ่ม "เริ่มสแกนใหม่"
+          const restartBtn = document.getElementById('restart-scan-btn');
+          if (restartBtn) {
+            restartBtn.addEventListener('click', () => {
+              // 1. ลบโมเดลออกจาก scene
+              if (model) {
+                scene.remove(model);
+                model.traverse(child => {
+                  if (child.isMesh) {
+                    child.geometry.dispose();
+                    child.material.dispose();
+                  }
+                });
+                model = null;
+              }
+              // 2. รีเซ็ตข้อความ info-content
+              const infoContent = document.getElementById('info-content');
+              if (infoContent) {
+                infoContent.innerHTML = 'สแกน QR Code เพื่อดูรายละเอียดโมเดล';
+              }
+              // 3. รีเซ็ตพื้นหลัง
+              renderer.setClearColor(0x000000, 0); // โปร่งใส
+              document.body.style.background = "none";
+              // 4. รีเซ็ตตัวแปรควบคุมโมเดล
+              rotationY = 0;
+              rotationX = 0;
+              // 5. กล้องกลับไปตำแหน่งเริ่มต้น
+              camera.position.set(0, 0, 5);
+              camera.lookAt(0, 0, 0);
+              // 6. แสดง info-message (ถ้ามีการซ่อน)
+              const infoMessageBox = document.getElementById('info-message');
+              if (infoMessageBox) infoMessageBox.style.display = 'block';
+              // 7. เปิดกล้องใหม่
+              isScanning = false;
+              codeReader.reset();
+              codeReader.decodeFromVideoDevice(null, 'video', async (result, err) => {
+                if (result && !isScanning) {
+                  isScanning = true;
+                  const url = result.getText();
+                  console.log('QR Detected:', url);
+                  // ใส่ background ใหม่ตอนสแกนเสร็จ (ตอนโหลดโมเดล)
+                  document.body.style.background = "#fff";
+                  loadFromQR(url);
+                }
+              });
+            });
+          }
+        }
+      });
 
       // ตั้งค่าสีพื้นหลัง
       renderer.setClearColor(0xffffff, 1);
