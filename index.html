@@ -152,13 +152,16 @@
       transition:width 0.3s;
     }
     #loading-screen .logo {
-      width: 300px;    /* เดิม 48px เพิ่มขึ้น 50% */
-      height: 300px;   /* เดิม 48px เพิ่มขึ้น 50% */
-      object-fit: contain;
+      width: 500px;
+      height: 500px;
+      object-fit: cover;
       margin-bottom: 16px;
       user-select: none;
       pointer-events: none;
       display: block;
+      border-radius: 50%;      /* ทำให้โลโก้เป็นวงกลม */
+      background: #fff;        /* เพิ่มพื้นหลังขาวถ้าต้องการให้เห็นความกลม */
+      box-shadow: 0 2px 16px rgba(0,0,0,0.10); /* เพิ่มเงาเล็กน้อย */
     }
   </style>
 </head>
