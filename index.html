@@ -2,23 +2,8 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
-  <!DOCTYPE html>
-  <html lang="th">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0" />
-    <title>FarmTraceAR</title>
-    <style>
-      /* ...existing CSS... */
-    </style>
-  </head>
-  <body>
-    <!-- 🟢 Loading Screen -->
-  
-    <!-- ...existing HTML... -->
-  </body>
-  </html>  <title>FarmTraceAR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmTraceAR</title>
   <style>
     /* 🔧 รีเซ็ตค่าเริ่มต้นของหน้า */
     html, body {
@@ -203,27 +188,55 @@
   <script type="module" src="./app.js"></script>
 
   <script>
-    // 🟢 ฟังก์ชันเปลี่ยนข้อความ info-box (ให้ app.js เรียกใช้)
-    window.setInfoBox = function(text) {
-      document.getElementById('info-content').innerHTML = text;
-    }
+  // 🟢 Loading screen สำหรับตอนเข้าเว็บ
+  let preloadDone = false;
+  let progress = 0;
+  const bar = document.getElementById('loading-bar');
+  const loadingScreen = document.getElementById('loading-screen');
 
-    // 🟢 Loading bar animation
-    let progress = 0;
-    const bar = document.getElementById('loading-bar');
-    const interval = setInterval(() => {
-      progress += Math.random() * 10 + 5; // เพิ่มทีละ 5-15%
-      if (progress > 100) progress = 100;
-      bar.style.width = progress + '%';
-      if (progress >= 100) clearInterval(interval);
-    }, 200);
-
-    // 🟢 รออย่างน้อย 2200ms ก่อนซ่อน loading screen
-    window.addEventListener('load', () => {
+  // Animation loading bar ปลอมตอนเข้าเว็บ
+  function fakePreload() {
+    if (preloadDone) return;
+    progress += Math.random() * 10 + 5;
+    if (progress > 100) progress = 100;
+    bar.style.width = progress + '%';
+    if (progress < 100) {
+      setTimeout(fakePreload, 180);
+    } else {
       setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
-      }, 2200);
-    });
+        if (!preloadDone) hidePreload();
+      }, 400);
+    }
+  }
+  function hidePreload() {
+    preloadDone = true;
+    if (loadingScreen) loadingScreen.style.display = 'none';
+  }
+
+  fakePreload();
+
+  window.addEventListener('load', () => {
+    setTimeout(hidePreload, 400);
+  });
+
+  // 🟢 ให้ app.js เรียกใช้ loading screen ตอนโหลดโมเดล
+  window.showModelLoading = function() {
+    if (loadingScreen) {
+      loadingScreen.style.display = 'flex';
+      bar.style.width = '0%';
+    }
+  };
+  window.setModelLoadingProgress = function(percent) {
+    if (bar) bar.style.width = percent + '%';
+  };
+  window.hideModelLoading = function() {
+    if (loadingScreen) loadingScreen.style.display = 'none';
+  };
+
+  // 🟢 ฟังก์ชันเปลี่ยนข้อความ info-box (ให้ app.js เรียกใช้)
+  window.setInfoBox = function(text) {
+    document.getElementById('info-content').innerHTML = text;
+  }
   </script>
-//</body>
-//</html>
+</body>
+</html>

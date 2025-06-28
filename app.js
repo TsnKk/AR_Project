@@ -28,13 +28,8 @@ let model = null; // ตัวแปรเก็บโมเดล 3D ปัจ�
 function loadModel(url) {
   const loader = new GLTFLoader();
 
-  // แสดง loading bar
-  const loadingScreen = document.getElementById('loading-screen');
-  const loadingBar = document.getElementById('loading-bar');
-  if (loadingScreen && loadingBar) {
-    loadingScreen.style.display = 'flex';
-    loadingBar.style.width = '0%';
-  }
+  // โชว์ loading screen ตอนโหลดโมเดล
+  if (window.showModelLoading) window.showModelLoading();
 
   loader.load(
     url,
@@ -56,20 +51,20 @@ function loadModel(url) {
       model.position.y = 1;
       scene.add(model);
 
-      // ซ่อน loading bar
-      if (loadingScreen) loadingScreen.style.display = 'none';
+      // ซ่อน loading screen
+      if (window.hideModelLoading) window.hideModelLoading();
     },
     // onProgress
     xhr => {
-      if (loadingBar && xhr.lengthComputable) {
+      if (window.setModelLoadingProgress && xhr.lengthComputable) {
         const percent = (xhr.loaded / xhr.total) * 100;
-        loadingBar.style.width = percent + '%';
+        window.setModelLoadingProgress(percent);
       }
     },
     // onError
     error => {
+      if (window.hideModelLoading) window.hideModelLoading();
       console.error('Error loading model:', error);
-      if (loadingScreen) loadingScreen.style.display = 'none';
     }
   );
 }
