@@ -24,27 +24,54 @@ scene.add(light);
 
 let model = null; // ตัวแปรเก็บโมเดล 3D ปัจจุบัน
 
-// ✅ ฟังก์ชันโหลดและแสดงโมเดล 3D (.glb)
+// ✅ ฟังก์ชันโหลดและแสดงโมเดล 3D (.glb) พร้อมแสดง progress
 function loadModel(url) {
   const loader = new GLTFLoader();
-  loader.load(url, gltf => {
-    // ถ้ามีโมเดลเดิมอยู่ ให้ลบและเคลียร์หน่วยความจำ
-    if (model) {
-      scene.remove(model);
-      model.traverse(child => {
-        if (child.isMesh) {
-          child.geometry.dispose();
-          child.material.dispose();
-        }
-      });
-      model = null;
+
+  // แสดง loading bar
+  const loadingScreen = document.getElementById('loading-screen');
+  const loadingBar = document.getElementById('loading-bar');
+  if (loadingScreen && loadingBar) {
+    loadingScreen.style.display = 'flex';
+    loadingBar.style.width = '0%';
+  }
+
+  loader.load(
+    url,
+    gltf => {
+      // ถ้ามีโมเดลเดิมอยู่ ให้ลบและเคลียร์หน่วยความจำ
+      if (model) {
+        scene.remove(model);
+        model.traverse(child => {
+          if (child.isMesh) {
+            child.geometry.dispose();
+            child.material.dispose();
+          }
+        });
+        model = null;
+      }
+      // เพิ่มโมเดลใหม่เข้า scene
+      model = gltf.scene;
+      model.scale.set(1.0, 1.0, 1.0);
+      model.position.y = 1;
+      scene.add(model);
+
+      // ซ่อน loading bar
+      if (loadingScreen) loadingScreen.style.display = 'none';
+    },
+    // onProgress
+    xhr => {
+      if (loadingBar && xhr.lengthComputable) {
+        const percent = (xhr.loaded / xhr.total) * 100;
+        loadingBar.style.width = percent + '%';
+      }
+    },
+    // onError
+    error => {
+      console.error('Error loading model:', error);
+      if (loadingScreen) loadingScreen.style.display = 'none';
     }
-    // เพิ่มโมเดลใหม่เข้า scene
-    model = gltf.scene;
-    model.scale.set(1.0, 1.0, 1.0);
-    model.position.y = 1; // ขยับโมเดลขึ้นเล็กน้อย
-    scene.add(model);
-  }, undefined, error => console.error('Error loading model:', error));
+  );
 }
 
 // ✅ ฟังก์ชันโหลดข้อมูลจาก QR (รองรับทั้ง URL และ JSON)
