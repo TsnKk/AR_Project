@@ -46,7 +46,7 @@ function loadModel(url, onLoaded) {
       // เพิ่มโมเดลใหม่เข้า scene
       model = gltf.scene;
       model.scale.set(1.0, 1.0, 1.0);
-      model.position.y = -1;
+      model.position.y = 0;
       scene.add(model);
 
       // ซ่อน loading screen
@@ -439,16 +439,14 @@ if (infoMessageBox && floatingToggleBtn) {
       infoMessageBox.style.maxHeight = '25vh';
       floatingToggleBtn.innerHTML = '▼';
       floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-      // ปรับตำแหน่งปุ่มให้ลอยเหนือกล่อง info-message
-      floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
     } else {
       infoMessageBox.classList.add('closed');
       infoMessageBox.style.maxHeight = '48px';
       floatingToggleBtn.innerHTML = '▲';
       floatingToggleBtn.title = 'แสดงแถบข้อมูล';
-      // ปรับตำแหน่งปุ่มให้ลอยเหนือกล่อง info-message ที่ย่อ
-      floatingToggleBtn.style.bottom = `80px`;
     }
+    // อัปเดตตำแหน่งปุ่มทุกครั้งที่ toggle
+    updateFloatingToggleBtn();
   });
 }
 
@@ -468,13 +466,12 @@ function updateFloatingToggleBtn() {
     // คำนวณตำแหน่ง info-message จริง
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const gap = 34; // เพิ่มระยะห่างจากกล่อง 10px
+    const gap = 44; // เพิ่มระยะห่างจากกล่อง 10px (จากเดิม 34 เป็น 44)
 
     // วางปุ่มเหนือ info-message จริง (responsive)
     floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   } else {
     floatingToggleBtn.style.display = 'none';
-    // คืนค่าแถบข้อมูลเป็นปกติเมื่อซ่อนปุ่ม
     infoMessageBox.classList.remove('closed');
     infoMessageBox.style.maxHeight = '25vh';
     floatingToggleBtn.innerHTML = '▼';
@@ -482,7 +479,7 @@ function updateFloatingToggleBtn() {
     // ให้ปุ่มอยู่เหนือ info-message ปกติ
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const gap = 34;
+    const gap = 44;
     floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   }
 }
