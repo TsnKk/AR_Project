@@ -460,12 +460,16 @@ function updateFloatingToggleBtn() {
     infoContent.querySelector('#restart-scan-btn')
   ) {
     floatingToggleBtn.style.display = 'block';
-
-    // คำนวณตำแหน่งปุ่มให้ลอยสูงกว่ากล่อง info-message เสมอ
     const rect = infoMessageBox.getBoundingClientRect();
-    const gap = 12; // px ระยะห่างจากกล่อง
-    // คำนวณจากขอบล่างหน้าจอถึงขอบบนกล่อง + gap
     const windowHeight = window.innerHeight;
+
+    // ตรวจสอบสถานะกล่อง closed หรือไม่
+    let gap;
+    if (infoMessageBox.classList.contains('closed')) {
+      gap = 24; // กล่องลอยต่ำลง ปุ่มสูงขึ้น
+    } else {
+      gap = -10; // กล่องลอยขึ้น ปุ่มต่ำลงมา 10px
+    }
     const bottom = windowHeight - rect.top + gap;
     floatingToggleBtn.style.bottom = `${bottom}px`;
   } else {
