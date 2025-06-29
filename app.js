@@ -395,12 +395,12 @@ if (infoMessageBox && toggleBtn) {
   toggleBtn.addEventListener('click', () => {
     if (infoMessageBox.classList.contains('closed')) {
       infoMessageBox.classList.remove('closed');
-      toggleBtn.innerHTML = '▼';
-      toggleBtn.title = 'ซ่อนแถบข้อมูล';
+      floatingToggleBtn.innerHTML = '▼';
+      floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
     } else {
       infoMessageBox.classList.add('closed');
-      toggleBtn.innerHTML = '▲';
-      toggleBtn.title = 'แสดงแถบข้อมูล';
+      floatingToggleBtn.innerHTML = '▲';
+      floatingToggleBtn.title = 'แสดงแถบข้อมูล';
     }
   });
 }
@@ -461,12 +461,9 @@ function updateFloatingToggleBtn() {
   ) {
     floatingToggleBtn.style.display = 'block';
     const rect = infoMessageBox.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const gap = 60; // ปรับ gap ให้มากขึ้น
-    const bottom = windowHeight - rect.top + gap;
+    const gap = 10; // ปรับระยะห่างจากกล่อง info-message
+    const bottom = rect.height + gap;
     floatingToggleBtn.style.bottom = `${bottom}px`;
-    // log ดูค่าที่ได้
-    console.log('floatingToggleBtn bottom:', bottom);
   } else {
     floatingToggleBtn.style.display = 'none';
   }
