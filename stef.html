@@ -226,5 +226,66 @@
         });
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+const supabase = supabase.createClient(
+  'https://qpwpezjmmiiwopwnpatz.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFwd3BlemptbWlpd29wd25wYXR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTExODQ2NTUsImV4cCI6MjA2Njc2MDY1NX0.aO-aXSQEWg91Ce-FrGOaLObjd76Y0ocrqgoZuY4vhGg'
+);
+
+document.getElementById('farmerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const profileInput = document.getElementById('profilePicInput');
+  let profileUrl = null;
+
+  // ถ้ามีไฟล์รูปภาพ
+  if (profileInput.files.length > 0) {
+    const file = profileInput.files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+    const filePath = `profile-pics/${fileName}`;
+
+    // อัปโหลดไป Supabase Storage
+    const { error: uploadError } = await supabase.storage
+      .from('profile-pics')
+      .upload(filePath, file);
+
+    if (uploadError) {
+      alert('❌ อัปโหลดรูปไม่สำเร็จ: ' + uploadError.message);
+      return;
+    }
+
+    // สร้าง public URL
+    const { data } = supabase.storage.from('profile-pics').getPublicUrl(filePath);
+    profileUrl = data.publicUrl;
+  }
+
+  // เตรียมข้อมูลที่จะบันทึกลงตาราง farmers
+  const dataToInsert = {
+    title_name: document.getElementById('titleName').value,
+    first_name: document.getElementById('firstName').value,
+    last_name: document.getElementById('lastName').value,
+    phone_number: document.getElementById('phone').value,
+    farm_name: document.getElementById('farmName').value,
+    farmer_id: document.getElementById('farmerId').value,
+    product_type: document.getElementById('productType').value,
+    address: document.getElementById('address').value,
+    line_id: document.getElementById('lineId').value,
+    facebook_page: document.getElementById('facebookPage').value,
+    about_farm: document.getElementById('aboutFarm').value,
+    profile_url: profileUrl
+  };
+
+  const { error } = await supabase.from('farmers').insert(dataToInsert);
+  if (error) {
+    alert('❌ บันทึกข้อมูลไม่สำเร็จ: ' + error.message);
+  } else {
+    alert('✅ บันทึกข้อมูลพร้อมรูปภาพแล้ว!');
+    document.getElementById('farmerForm').reset();
+    document.getElementById('profilePicPreview').innerHTML = '<span>อัปโหลดรูปโปรไฟล์<br/>หรือโลโก้สวน</span>';
+  }
+});
+    </script>
 </body>
 </html>
