@@ -46,7 +46,7 @@ function loadModel(url, onLoaded) {
       // เพิ่มโมเดลใหม่เข้า scene
       model = gltf.scene;
       model.scale.set(1.0, 1.0, 1.0);
-      model.position.y = 1;
+      model.position.y = -1;
       scene.add(model);
 
       // ซ่อน loading screen
@@ -439,13 +439,15 @@ if (infoMessageBox && floatingToggleBtn) {
       infoMessageBox.style.maxHeight = '25vh';
       floatingToggleBtn.innerHTML = '▼';
       floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-      floatingToggleBtn.style.bottom = '16px';
+      // ปรับตำแหน่งปุ่มให้ลอยเหนือกล่อง info-message
+      floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
     } else {
       infoMessageBox.classList.add('closed');
       infoMessageBox.style.maxHeight = '48px';
       floatingToggleBtn.innerHTML = '▲';
       floatingToggleBtn.title = 'แสดงแถบข้อมูล';
-      floatingToggleBtn.style.bottom = '16px';
+      // ปรับตำแหน่งปุ่มให้ลอยเหนือกล่อง info-message ที่ย่อ
+      floatingToggleBtn.style.bottom = `80px`;
     }
   });
 }
@@ -461,6 +463,12 @@ function updateFloatingToggleBtn() {
     infoContent.querySelector('#restart-scan-btn')
   ) {
     floatingToggleBtn.style.display = 'block';
+    // ปรับตำแหน่งปุ่มให้ลอยเหนือ info-message (ตามสถานะ)
+    if (infoMessageBox.classList.contains('closed')) {
+      floatingToggleBtn.style.bottom = `80px`;
+    } else {
+      floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
+    }
   } else {
     floatingToggleBtn.style.display = 'none';
     // คืนค่าแถบข้อมูลเป็นปกติเมื่อซ่อนปุ่ม
@@ -468,7 +476,7 @@ function updateFloatingToggleBtn() {
     infoMessageBox.style.maxHeight = '25vh';
     floatingToggleBtn.innerHTML = '▼';
     floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-    floatingToggleBtn.style.bottom = '16px';
+    floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
   }
 }
 
