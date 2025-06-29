@@ -455,7 +455,8 @@ if (infoMessageBox && floatingToggleBtn) {
 // ฟังก์ชันสำหรับแสดง/ซ่อนปุ่ม toggle ลอย ตามสถานะ info-content
 function updateFloatingToggleBtn() {
   const infoContent = document.getElementById('info-content');
-  if (!floatingToggleBtn || !infoContent) return;
+  if (!floatingToggleBtn || !infoContent || !infoMessageBox) return;
+
   // ถ้ามีข้อมูลโมเดล (มี <h3> หรือ <p> หรือปุ่ม restart) ให้แสดงปุ่ม
   if (
     infoContent.querySelector('h3') ||
@@ -463,12 +464,14 @@ function updateFloatingToggleBtn() {
     infoContent.querySelector('#restart-scan-btn')
   ) {
     floatingToggleBtn.style.display = 'block';
-    // ปรับตำแหน่งปุ่มให้ลอยเหนือ info-message (ตามสถานะ)
-    if (infoMessageBox.classList.contains('closed')) {
-      floatingToggleBtn.style.bottom = `80px`;
-    } else {
-      floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
-    }
+
+    // คำนวณตำแหน่ง info-message จริง
+    const rect = infoMessageBox.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const gap = 24; // ระยะห่างระหว่างปุ่มกับกล่อง
+
+    // วางปุ่มเหนือ info-message จริง (responsive)
+    floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   } else {
     floatingToggleBtn.style.display = 'none';
     // คืนค่าแถบข้อมูลเป็นปกติเมื่อซ่อนปุ่ม
@@ -476,7 +479,11 @@ function updateFloatingToggleBtn() {
     infoMessageBox.style.maxHeight = '25vh';
     floatingToggleBtn.innerHTML = '▼';
     floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-    floatingToggleBtn.style.bottom = `calc(25vh + 32px)`;
+    // ให้ปุ่มอยู่เหนือ info-message ปกติ
+    const rect = infoMessageBox.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const gap = 24;
+    floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   }
 }
 
@@ -488,3 +495,6 @@ if (infoContent) {
   // เรียกครั้งแรก
   updateFloatingToggleBtn();
 }
+
+// เรียก updateFloatingToggleBtn ทุกครั้งที่ resize ด้วย
+window.addEventListener('resize', updateFloatingToggleBtn);
