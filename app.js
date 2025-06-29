@@ -426,11 +426,12 @@ if (!floatingToggleBtn) {
   floatingToggleBtn.style.opacity = '0.92';
   floatingToggleBtn.style.boxShadow = '0 2px 8px rgba(0,0,0,0.18)';
   floatingToggleBtn.style.cursor = 'pointer';
-  floatingToggleBtn.style.display = 'none'; // ซ่อนเริ่มต้น
+  floatingToggleBtn.style.display = 'none';
   floatingToggleBtn.style.transition = 'bottom 0.3s cubic-bezier(.4,0,.2,1)';
   document.body.appendChild(floatingToggleBtn);
 }
 
+// Toggle ปุ่มลอยสำหรับ info-message
 if (infoMessageBox && floatingToggleBtn) {
   floatingToggleBtn.addEventListener('click', () => {
     if (infoMessageBox.classList.contains('closed')) {
@@ -444,12 +445,11 @@ if (infoMessageBox && floatingToggleBtn) {
       floatingToggleBtn.innerHTML = '▲';
       floatingToggleBtn.title = 'แสดงแถบข้อมูล';
     }
-    // อัปเดตตำแหน่งปุ่มทุกครั้งที่ toggle
     updateFloatingToggleBtn();
   });
 }
 
-// ฟังก์ชันสำหรับแสดง/ซ่อนปุ่ม toggle ลอย ตามสถานะ info-content
+// ปรับตำแหน่งปุ่ม toggle ให้ลอยเหนือ info-message เสมอ
 function updateFloatingToggleBtn() {
   const infoContent = document.getElementById('info-content');
   if (!floatingToggleBtn || !infoContent || !infoMessageBox) return;
@@ -462,13 +462,11 @@ function updateFloatingToggleBtn() {
     floatingToggleBtn.style.display = 'block';
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-
-    // ตรวจสอบสถานะกล่อง closed หรือไม่
     let gap;
     if (infoMessageBox.classList.contains('closed')) {
-      gap = 24; // กล่องลอยต่ำลง ปุ่มสูงขึ้น
+      gap = 24; // กล่องซ่อน ปุ่มสูงขึ้น
     } else {
-      gap = -10; // กล่องลอยขึ้น ปุ่มต่ำลงมา 10px
+      gap = -10; // กล่องโชว์ ปุ่มต่ำลงมา 10px
     }
     const bottom = windowHeight - rect.top + gap;
     floatingToggleBtn.style.bottom = `${bottom}px`;
@@ -477,21 +475,14 @@ function updateFloatingToggleBtn() {
   }
 }
 
-// เรียกใช้ทุกครั้งที่ info-content เปลี่ยน
-const infoContent = document.getElementById('info-content');
-if (infoContent) {
+// เรียกใช้เมื่อ info-content เปลี่ยน
+const infoContentEl = document.getElementById('info-content');
+if (infoContentEl) {
   const observer = new MutationObserver(updateFloatingToggleBtn);
-  observer.observe(infoContent, { childList: true, subtree: true });
-  // เรียกครั้งแรก
+  observer.observe(infoContentEl, { childList: true, subtree: true });
   updateFloatingToggleBtn();
 }
 
-// เรียก updateFloatingToggleBtn ทุกครั้งที่ resize ด้วย
+// Responsive: อัปเดตตำแหน่งปุ่มเมื่อ resize หรือ transition
 window.addEventListener('resize', updateFloatingToggleBtn);
-
-// #info-floating-toggle-btn {
-//   position: fixed;
-//   right: 24px;
-//   z-index: 30;
-//   /* ไม่ต้องกำหนด bottom ตายตัวใน CSS */
-// }
+infoMessageBox.addEventListener('transitionend', updateFloatingToggleBtn);
