@@ -415,7 +415,6 @@ if (!floatingToggleBtn) {
   // สไตล์ปุ่มลอย
   floatingToggleBtn.style.position = 'fixed';
   floatingToggleBtn.style.right = '24px';
-  floatingToggleBtn.style.bottom = '16px'; // ขยับลงต่ำกว่าเดิม
   floatingToggleBtn.style.zIndex = '30';
   floatingToggleBtn.style.background = 'rgba(30,32,36,0.95)';
   floatingToggleBtn.style.color = '#fff';
@@ -455,32 +454,21 @@ function updateFloatingToggleBtn() {
   const infoContent = document.getElementById('info-content');
   if (!floatingToggleBtn || !infoContent || !infoMessageBox) return;
 
-  // ถ้ามีข้อมูลโมเดล (มี <h3> หรือ <p> หรือปุ่ม restart) ให้แสดงปุ่ม
   if (
     infoContent.querySelector('h3') ||
     infoContent.querySelector('p') ||
     infoContent.querySelector('#restart-scan-btn')
   ) {
     floatingToggleBtn.style.display = 'block';
-
-    // คำนวณตำแหน่ง info-message จริง
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const gap = 100; // ทดสอบให้เห็นชัด
-
-    // วางปุ่มเหนือ info-message จริง (responsive)
-    floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
+    const gap = 60; // ปรับ gap ให้มากขึ้น
+    const bottom = windowHeight - rect.top + gap;
+    floatingToggleBtn.style.bottom = `${bottom}px`;
+    // log ดูค่าที่ได้
+    console.log('floatingToggleBtn bottom:', bottom);
   } else {
     floatingToggleBtn.style.display = 'none';
-    infoMessageBox.classList.remove('closed');
-    infoMessageBox.style.maxHeight = '25vh';
-    floatingToggleBtn.innerHTML = '▼';
-    floatingToggleBtn.title = 'ซ่อนแถบข้อมูล';
-    // ให้ปุ่มอยู่เหนือ info-message ปกติ
-    const rect = infoMessageBox.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const gap = 100;
-    floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   }
 }
 
@@ -495,3 +483,10 @@ if (infoContent) {
 
 // เรียก updateFloatingToggleBtn ทุกครั้งที่ resize ด้วย
 window.addEventListener('resize', updateFloatingToggleBtn);
+
+// #info-floating-toggle-btn {
+//   position: fixed;
+//   right: 24px;
+//   z-index: 30;
+//   /* ไม่ต้องกำหนด bottom ตายตัวใน CSS */
+// }
