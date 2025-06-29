@@ -466,7 +466,7 @@ function updateFloatingToggleBtn() {
     // คำนวณตำแหน่ง info-message จริง
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const gap = 44; // เพิ่มระยะห่างจากกล่อง 10px (จากเดิม 34 เป็น 44)
+    const gap = 100; // ทดสอบให้เห็นชัด
 
     // วางปุ่มเหนือ info-message จริง (responsive)
     floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
@@ -479,7 +479,7 @@ function updateFloatingToggleBtn() {
     // ให้ปุ่มอยู่เหนือ info-message ปกติ
     const rect = infoMessageBox.getBoundingClientRect();
     const windowHeight = window.innerHeight;
-    const gap = 44;
+    const gap = 100;
     floatingToggleBtn.style.bottom = `${windowHeight - rect.top + gap}px`;
   }
 }
