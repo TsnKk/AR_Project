@@ -460,12 +460,14 @@ function updateFloatingToggleBtn() {
     infoContent.querySelector('#restart-scan-btn')
   ) {
     floatingToggleBtn.style.display = 'block';
-    // อ่านค่า bottom ของกล่อง info-message จาก style (หรือ CSS)
-    const infoBoxBottom = window.getComputedStyle(infoMessageBox).bottom;
-    const gap = 12; // px สูงกว่ากล่องข้อความเล็กน้อย
-    // แปลงเป็นตัวเลข (เช่น "20px" => 20)
-    const infoBoxBottomNum = parseFloat(infoBoxBottom) || 0;
-    floatingToggleBtn.style.bottom = `${infoBoxBottomNum + gap}px`;
+
+    // คำนวณตำแหน่งปุ่มให้ลอยสูงกว่ากล่อง info-message เสมอ
+    const rect = infoMessageBox.getBoundingClientRect();
+    const gap = 12; // px ระยะห่างจากกล่อง
+    // คำนวณจากขอบล่างหน้าจอถึงขอบบนกล่อง + gap
+    const windowHeight = window.innerHeight;
+    const bottom = windowHeight - rect.top + gap;
+    floatingToggleBtn.style.bottom = `${bottom}px`;
   } else {
     floatingToggleBtn.style.display = 'none';
   }
