@@ -461,7 +461,7 @@ function updateFloatingToggleBtn() {
   ) {
     floatingToggleBtn.style.display = 'block';
     const rect = infoMessageBox.getBoundingClientRect();
-    const gap = 10; // ปรับระยะห่างจากกล่อง info-message
+    const gap = 5; // ปรับระยะห่างจากกล่อง info-message
     const bottom = rect.height + gap;
     floatingToggleBtn.style.bottom = `${bottom}px`;
   } else {
